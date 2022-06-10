@@ -28,6 +28,13 @@ dependencies {
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': project.version)
+    }
+}
+
 java {
 	withJavadocJar()
 	withSourcesJar()

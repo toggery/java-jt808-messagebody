@@ -7,10 +7,18 @@ package io.github.toggery.jt808.messagebody;
  */
 public interface TerminalInfo {
 
-    /** @return 所属组 */
+    /**
+     * 获取所属组
+     *
+     * @return 所属组
+     */
     String getGroup();
 
-    /** @return 空闲时间，单位为秒 */
+    /**
+     * 获取空闲时间
+     *
+     * @return 空闲时间，单位为秒
+     */
     int getIdle();
 
 }
