@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.toggery'
-version = '1.0.0'
+version = '2.0.0'
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -13,19 +13,19 @@ repositories {
 	mavenCentral()
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 ext {
-	lombokVersion = '1.18.24'
+	nettyVersion = '4.1.77.Final'
+	jupiterVersion = '5.8.2'
 }
 
 dependencies {
-	compileOnly "org.projectlombok:lombok:${lombokVersion}"
-	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	implementation "io.netty:netty-buffer:${nettyVersion}"
+
+	testImplementation "org.junit.jupiter:junit-jupiter:${jupiterVersion}"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
 jar {
@@ -51,16 +51,16 @@ javadoc {
 publishing {
 	publications {
 		MyLibrary(MavenPublication) {
-			artifactId = 'jt808-messagebody'
+			artifactId = 'jt808-message'
 			from components.java
 			pom {
-				name = 'JT/T 808 Message Body'
-				description = 'Message body definition for JT/T 808 protocol'
-				url = 'https://github.com/toggery/java-jt808-messagebody'
+				name = 'JT/T 808 Message'
+				description = 'JT/T 808 消息定义及编码解码'
+				url = 'https://github.com/toggery/java-jt808-message'
 				licenses {
 					license {
-						name = 'The Apache License, Version 2.0'
-						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+						name = 'The MIT License'
+						url = 'https://choosealicense.com/licenses/mit/'
 					}
 				}
 				developers {
@@ -71,9 +71,9 @@ publishing {
 					}
 				}
 				scm {
-					connection = 'scm:git:git://github.com/toggery/java-jt808-messagebody.git'
-					developerConnection = 'scm:git:ssh://github.com/toggery/java-jt808-messagebody.git'
-					url = 'https://github.com/toggery/java-jt808-messagebody'
+					connection = 'scm:git:git://github.com/toggery/java-jt808-message.git'
+					developerConnection = 'scm:git:ssh://github.com/toggery/java-jt808-message.git'
+					url = 'https://github.com/toggery/java-jt808-message'
 				}
 			}
 		}
