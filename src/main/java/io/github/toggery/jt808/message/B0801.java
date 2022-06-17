@@ -12,6 +12,11 @@ import java.util.StringJoiner;
  */
 public class B0801 extends B0200 {
 
+    /** 实例化一个新的 {@link B0801} */
+    public B0801() {
+        super(true);
+    }
+
     /** DWORD 多媒体数据 ID，值大于 0 */
     private long id;
 
@@ -57,6 +62,7 @@ public class B0801 extends B0200 {
 
     /** BYTE[] 多媒体数据包 */
     private byte[] data;
+
 
     @Override
     protected void toStringJoiner(StringJoiner joiner) {

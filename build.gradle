@@ -6,7 +6,7 @@ plugins {
 
 group = 'io.github.toggery'
 version = '2.0.0'
-sourceCompatibility = 1.8
+sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 repositories {
@@ -26,6 +26,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+compileJava {
+	options.compilerArgs << '-Xlint:deprecation'
 }
 
 jar {
@@ -55,7 +59,7 @@ publishing {
 			from components.java
 			pom {
 				name = 'JT/T 808 Message'
-				description = 'JT/T 808 消息定义及编码解码'
+				description = 'Java 语言实现的 JT/T 808 消息定义及编码解码'
 				url = 'https://github.com/toggery/java-jt808-message'
 				licenses {
 					license {

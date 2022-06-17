@@ -23,7 +23,7 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
      *     <li>其他: 保留</li>
      * </ul>
      */
-    private int flags;
+    private int props;
 
     /** STRING 问题 */
     private String question;
@@ -35,7 +35,7 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("flags=" + flags)
+                .add("props=" + props)
                 .add("question=" + (question == null ? "" : question))
                 .add("options=" + options)
         ;
@@ -43,7 +43,7 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
 
     @Override
     public void encode(int version, ByteBuf buf) {
-        Codec.writeByte(buf, flags);
+        Codec.writeByte(buf, props);
         Codec.writeString(buf, IntUnit.BYTE, question);
 
         options.stream().filter(Objects::nonNull).forEach(o -> o.encode(version, buf));
@@ -53,7 +53,7 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
     public void decode(int version, ByteBuf buf) {
         options.clear();
 
-        flags = Codec.readByte(buf);
+        props = Codec.readByte(buf);
         question = Codec.readString(buf, IntUnit.BYTE);
 
         while (buf.isReadable()) {
@@ -74,8 +74,8 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
      * </ul>
      * @return BYTE 标志
      */
-    public int getFlags() {
-        return flags;
+    public int getProps() {
+        return props;
     }
 
     /**
@@ -86,10 +86,10 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
      *     <li>bit4: 广告屏显示</li>
      *     <li>其他: 保留</li>
      * </ul>
-     * @param flags BYTE 标志
+     * @param props BYTE 标志
      */
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setProps(int props) {
+        this.props = props;
     }
 
     /**

@@ -236,7 +236,8 @@ public interface Codec {
         }
 
         final int actual = value != null ? value.length : 0;
-        int pad = Math.abs(length) - actual;
+        final int pLen = Math.abs(length);
+        int pad = pLen - actual;
 
         if (length > 0) {
             while (pad-- > 0) {
@@ -244,7 +245,7 @@ public interface Codec {
             }
         }
         if (actual > 0) {
-            buf.writeBytes(value, 0, Math.min(actual, length));
+            buf.writeBytes(value, 0, Math.min(actual, pLen));
         }
         if (length < 0) {
             while (pad-- > 0) {

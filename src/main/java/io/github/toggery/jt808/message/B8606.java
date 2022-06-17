@@ -28,7 +28,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
      *     <li>其他: 保留</li>
      * </ul>
      */
-    private int flags;
+    private int props;
 
     /** BCD[6] 起始时间，yyMMddHHmmss，若区域属性 0 位为 0 则没有该字段 */
     private String startTime;
@@ -42,11 +42,12 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
     /** 路线拐点列表 */
     private final List<Point> points = new ArrayList<>();
 
+
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
                 .add("id=" + id)
-                .add("flags=" + flags)
+                .add("props=" + props)
                 .add("startTime=" + (startTime == null ? "" : startTime))
                 .add("endTime=" + (endTime == null ? "" : endTime))
                 .add("name=" + (name == null ? "" : name))
@@ -57,9 +58,9 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
     @Override
     public void encode(int version, ByteBuf buf) {
         Codec.writeDoubleWord(buf, id);
-        Codec.writeWord(buf, flags);
+        Codec.writeWord(buf, props);
 
-        if ((flags & BIT0_MASK) == BIT0_MASK) {
+        if ((props & BIT0_MASK) == BIT0_MASK) {
             Codec.writeBcd(buf, startTime, 6);
             Codec.writeBcd(buf, endTime, 6);
         }
@@ -83,9 +84,9 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
     public void decode(int version, ByteBuf buf) {
         points.clear();
         id = Codec.readDoubleWord(buf);
-        flags = Codec.readWord(buf);
+        props = Codec.readWord(buf);
 
-        if ((flags & BIT0_MASK) == BIT0_MASK) {
+        if ((props & BIT0_MASK) == BIT0_MASK) {
             startTime = Codec.readBcd(buf, 6, false);
             endTime = Codec.readBcd(buf, 6, false);
         }
@@ -132,8 +133,8 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
      * </ul>
      * @return WORD 路线属性
      */
-    public int getFlags() {
-        return flags;
+    public int getProps() {
+        return props;
     }
 
     /**
@@ -147,10 +148,10 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
      *     <li>bit5: 出路线是否报警给平台，0.否 1.是；</li>
      *     <li>其他: 保留</li>
      * </ul>
-     * @param flags WORD 路线属性
+     * @param props WORD 路线属性
      */
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setProps(int props) {
+        this.props = props;
     }
 
     /**
@@ -209,9 +210,9 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
         return points;
     }
 
-    /** {@link Point#flags} 二进制位 0 掩码 */
+    /** {@link Point#props} 二进制位 0 掩码 */
     protected static final int BIT0_MASK = 0b1;
-    /** {@link Point#flags} 二进制位 1 掩码 */
+    /** {@link Point#props} 二进制位 1 掩码 */
     protected static final int BIT1_MASK = 0b10;
 
     /**
@@ -246,7 +247,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
          *     <li>其他: 保留</li>
          * </ul>
          */
-        private int flags;
+        private int props;
 
         /** WORD 路段行驶过长阈值，单位为秒（s），若路段属性 0 位为 0 则没有该字段 */
         private int maxTime;
@@ -263,6 +264,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
         /** WORD 路段夜间最高速度，单位为 km/h，若区域属性 1 位为 0 则没有该字段 */
         private int nightMaxSpeed;
 
+
         @Override
         protected void toStringJoiner(StringJoiner joiner) {
             joiner
@@ -271,7 +273,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
                     .add("latitude=" + latitude)
                     .add("longitude=" + longitude)
                     .add("width=" + width)
-                    .add("flags=" + flags)
+                    .add("props=" + props)
                     .add("maxTime=" + maxTime)
                     .add("minTime=" + minTime)
                     .add("maxSpeed=" + maxSpeed)
@@ -287,14 +289,14 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
             Codec.writeDoubleWord(buf, latitude);
             Codec.writeDoubleWord(buf, longitude);
             Codec.writeByte(buf, width);
-            Codec.writeByte(buf, flags);
+            Codec.writeByte(buf, props);
 
-            if ((flags & BIT0_MASK) == BIT0_MASK) {
+            if ((props & BIT0_MASK) == BIT0_MASK) {
                 Codec.writeWord(buf, maxTime);
                 Codec.writeWord(buf, minTime);
             }
 
-            if ((flags & BIT1_MASK) == BIT1_MASK) {
+            if ((props & BIT1_MASK) == BIT1_MASK) {
                 Codec.writeWord(buf, maxSpeed);
                 Codec.writeByte(buf, duration);
 
@@ -310,15 +312,15 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
             segmentId = Codec.readDoubleWord(buf);
             latitude = Codec.readDoubleWord(buf);
             longitude = Codec.readDoubleWord(buf);
-            flags = Codec.readByte(buf);
             width = Codec.readByte(buf);
+            props = Codec.readByte(buf);
 
-            if ((flags & BIT0_MASK) == BIT0_MASK) {
+            if ((props & BIT0_MASK) == BIT0_MASK) {
                 maxTime = Codec.readWord(buf);
-                maxTime = Codec.readWord(buf);
+                minTime = Codec.readWord(buf);
             }
 
-            if ((flags & BIT1_MASK) == BIT1_MASK) {
+            if ((props & BIT1_MASK) == BIT1_MASK) {
                 maxSpeed = Codec.readWord(buf);
                 duration = Codec.readByte(buf);
 
@@ -420,8 +422,8 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
          * </ul>
          * @return BYTE 路段属性
          */
-        public int getFlags() {
-            return flags;
+        public int getProps() {
+            return props;
         }
 
         /**
@@ -433,10 +435,10 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
          *     <li>bit3: 0.东经 1.西经；</li>
          *     <li>其他: 保留</li>
          * </ul>
-         * @param flags BYTE 路段属性
+         * @param props BYTE 路段属性
          */
-        public void setFlags(int flags) {
-            this.flags = flags;
+        public void setProps(int props) {
+            this.props = props;
         }
 
         /**

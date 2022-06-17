@@ -34,7 +34,7 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
      *     <li>bit15: 0.进区域不采集 GNSS 详细定位数据 1.进区域采集 GNSS 详细定位数据；</li>
      * </ul>
      */
-    private int flags;
+    private int props;
 
     /** BCD[6] 起始时间，yyMMddHHmmss，若区域属性 0 位为 0 则没有该字段 */
     private String startTime;
@@ -62,7 +62,7 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
                 .add("id=" + id)
-                .add("flags=" + flags)
+                .add("props=" + props)
                 .add("startTime=" + (startTime == null ? "" : startTime))
                 .add("endTime=" + (endTime == null ? "" : endTime))
                 .add("maxSpeed=" + maxSpeed)
@@ -76,14 +76,14 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
     @Override
     public void encode(int version, ByteBuf buf) {
         Codec.writeDoubleWord(buf, id);
-        Codec.writeWord(buf, flags);
+        Codec.writeWord(buf, props);
 
-        if ((flags & BIT0_MASK) == BIT0_MASK) {
+        if ((props & BIT0_MASK) == BIT0_MASK) {
             Codec.writeBcd(buf, startTime, 6);
             Codec.writeBcd(buf, endTime, 6);
         }
 
-        final boolean limitSpeed = (flags & BIT1_MASK) == BIT1_MASK;
+        final boolean limitSpeed = (props & BIT1_MASK) == BIT1_MASK;
         if (limitSpeed) {
             Codec.writeWord(buf, maxSpeed);
             Codec.writeByte(buf, duration);
@@ -111,14 +111,14 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
     public void decode(int version, ByteBuf buf) {
         points.clear();
         id = Codec.readDoubleWord(buf);
-        flags = Codec.readWord(buf);
+        props = Codec.readWord(buf);
 
-        if ((flags & BIT0_MASK) == BIT0_MASK) {
+        if ((props & BIT0_MASK) == BIT0_MASK) {
             startTime = Codec.readBcd(buf,6, false);
             endTime = Codec.readBcd(buf,6, false);
         }
 
-        final boolean limitSpeed = (flags & BIT1_MASK) == BIT1_MASK;
+        final boolean limitSpeed = (props & BIT1_MASK) == BIT1_MASK;
         if (limitSpeed) {
             maxSpeed = Codec.readWord(buf);
             duration = Codec.readByte(buf);
@@ -174,8 +174,8 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
      * </ul>
      * @return WORD 区域属性
      */
-    public int getFlags() {
-        return flags;
+    public int getProps() {
+        return props;
     }
 
     /**
@@ -194,10 +194,10 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
      *     <li>bit14: 0.进区域开启通信模块 1.进区域关闭通信模块；</li>
      *     <li>bit15: 0.进区域不采集 GNSS 详细定位数据 1.进区域采集 GNSS 详细定位数据；</li>
      * </ul>
-     * @param flags WORD 区域属性
+     * @param props WORD 区域属性
      */
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setProps(int props) {
+        this.props = props;
     }
 
     /**
@@ -304,9 +304,9 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
         return points;
     }
 
-    /** {@link #flags} 二进制位 0 掩码 */
+    /** {@link #props} 二进制位 0 掩码 */
     protected static final int BIT0_MASK = 0b1;
-    /** {@link #flags} 二进制位 1 掩码 */
+    /** {@link #props} 二进制位 1 掩码 */
     protected static final int BIT1_MASK = 0b10;
 
     /**
@@ -320,6 +320,7 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
 
         /** DWORD 顶点经度，以度为单位的经度值乘以 10 的 6 次方，精确到百万分之一度 */
         private long longitude;
+
 
         @Override
         protected void toStringJoiner(StringJoiner joiner) {

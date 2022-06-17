@@ -7,7 +7,6 @@ import io.netty.util.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * JT/T 消息，不可直接实例化
@@ -84,7 +83,9 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
         final ByteBuf bodyBuf = bufSupplier.apply(256);
         msg.getBody().encode(msg.version, bodyBuf);
         int bodyLen = bodyBuf.readableBytes();
-        msg.setBodyLength(bodyLen);
+        if (bodyLen > LONG_BODY_CAP) {
+            throw new EncodingException(String.format("message body length can NOT be more than %,d", LONG_BODY_CAP));
+        }
         final int cnt = (int) Math.ceil((double) bodyLen / BODY_LENGTH_MAX);
         if (cnt == 0) {
             bodyBuf.release();
@@ -93,6 +94,7 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
 
         // 2.1 不分包
         if (cnt == 1) {
+            msg.setBodyLength(bodyLen);
             msg.setSn(takeSn(attributeMap));
             final ByteBuf headerBuf = bufSupplier.apply(estimateHeaderLength(msg.version, false));
             msg.encode(headerBuf);
@@ -113,12 +115,14 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
             msg.bodyPacketCount = cnt;
             final int[] sns = takeSns(attributeMap, cnt);
             for (int i = 0; i < cnt; i++) {
-                msg.setSn(sns[i]);
+                bodyLen -= BODY_LENGTH_MAX * i;
+                final int actualLen = Math.min(BODY_LENGTH_MAX, bodyLen);
+                msg.setBodyLength(actualLen);
                 msg.bodyPacketNo = i + 1;
+                msg.setSn(sns[i]);
                 final ByteBuf headerBuf = bufSupplier.apply(headerLen);
                 msg.encode(headerBuf);
-                bodyLen -= BODY_LENGTH_MAX * i;
-                final ByteBuf packetBuf = bodyBuf.readRetainedSlice(Math.min(BODY_LENGTH_MAX, bodyLen));
+                final ByteBuf packetBuf = bodyBuf.readRetainedSlice(actualLen);
                 ByteBuf buf = bodyBuf.alloc()
                         .compositeBuffer(2)
                         .addComponent(true, headerBuf)
@@ -127,6 +131,8 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
                 buf = escape(sign(buf));
                 bufConsumer.accept(buf);
             }
+            msg.setBodyLength(BODY_LENGTH_MAX);
+            msg.bodyPacketNo = 1;
             msg.setSn(sns[0]);
         } finally {
             bodyBuf.release();
@@ -210,14 +216,18 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
                 throw new DecodingException("not found metadata of message: " + msg);
             }
 
-            final Supplier<T> bodyCreator = castBodyCreator(metadata.getBodyCreator());
-            if (bodyCreator == null) {
+            final Class<T> bodyClass = castBodyClass(metadata.getBodyClass());
+            if (bodyClass == null) {
                 throw new DecodingException("no body codec for message: " + msg);
             }
 
             if (!msg.isLongBody()) {
-                msg.body = bodyCreator.get();
-                msg.body.decode(msg.version, verified);
+                try {
+                    msg.body = bodyClass.getDeclaredConstructor().newInstance();
+                    msg.body.decode(msg.version, verified);
+                } catch (Exception e) {
+                    throw new DecodingException("failed to instantiate body", e);
+                }
                 return msg;
             }
 
@@ -240,9 +250,11 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
             }
             if (cached.bodyPackets.numComponents() >= msg.bodyPacketCount) {
                 try {
-                    cached.body = bodyCreator.get();
+                    cached.body = bodyClass.getDeclaredConstructor().newInstance();
                     cached.body.decode(cached.version, cached.bodyPackets);
                     return cached;
+                } catch (Exception e) {
+                    throw new DecodingException("failed to instantiate body", e);
                 } finally {
                     releaseBodyPackets(attributeMap);
                 }
@@ -654,11 +666,11 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
         return casted;
     }
 
-    private static <T extends Codec> Supplier<T> castBodyCreator(Supplier<? extends Codec> bodyCreator) {
-        if (bodyCreator == null) return null;
+    private static <T extends Codec> Class<T> castBodyClass(Class<? extends Codec> bodyClass) {
+        if (bodyClass == null) return null;
 
         @SuppressWarnings("unchecked")
-        final Supplier<T> casted = (Supplier<T>) bodyCreator;
+        final Class<T> casted = (Class<T>) bodyClass;
         return casted;
     }
 
@@ -801,6 +813,8 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
     private final static int LONG_BODY_MASK = 1 << 13;
     private final static int ENCRYPTION_MASK = ENCRYPTION_MAX << ENCRYPTION_POSITION;
     private final static int BODY_LENGTH_MAX = (1 << ENCRYPTION_POSITION) - 1;
+    /** 长消息体容量 */
+    private final static int LONG_BODY_CAP = BODY_LENGTH_MAX * WORD_MAX;
 
     /** 消息头长度最小值，2013 版（version=0）且没有消息体 */
     private final static int HEADER_LENGTH_MIN_2013 = 12;
@@ -814,7 +828,7 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
     /** 数据帧长度最大值：{@code (消息头 + 消息体 + 校验码[1]) * 2(转义预留)} */
     public final static int FRAME_LENGTH_MAX = (HEADER_LENGTH_MAX + BODY_LENGTH_MAX + 1) * 2;
 
-    private final static AttributeKey<Integer> SN_KEY = AttributeKey.newInstance("jt808-codec-sn");
-    private final static AttributeKey<Message<?>> BODY_PACKETS_KEY = AttributeKey.newInstance("jt808-codec-body-packets");
+    private final static AttributeKey<Integer> SN_KEY = AttributeKey.newInstance("jt808-message-sn");
+    private final static AttributeKey<Message<?>> BODY_PACKETS_KEY = AttributeKey.newInstance("jt808-message-body-packets");
 
 }

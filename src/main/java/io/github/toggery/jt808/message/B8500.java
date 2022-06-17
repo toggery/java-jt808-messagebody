@@ -2,9 +2,8 @@ package io.github.toggery.jt808.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.util.internal.PlatformDependent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -17,8 +16,15 @@ import java.util.function.Supplier;
  *
  * 注意：
  * <ul>
- *     <li>2019之前的版本，使用属性 {@link #flags}</li>
- *     <li>2019及其之后的版本，使用其他属性</li>
+ *     <li>2019之前的版本，使用属性 {@link #command}</li>
+ *     <li>
+ *         2019及其之后的版本，使用其他属性
+ *         <ul>
+ *             <li>0x0001：车门；</li>
+ *             <li>0x0002~0x8000：为标准修订预留；</li>
+ *             <li>0xF001~0xFFFF：为厂家自定义控制类型；</li>
+ *         </ul>
+ *     </li>
  * </ul>
  *
  * @author togger
@@ -26,14 +32,14 @@ import java.util.function.Supplier;
 public class B8500 extends AbstractToStringJoiner implements Codec {
 
     /**
-     * BYTE 控制标志，仅适用于 2019 之前的版本
+     * BYTE 控制指令标志位，仅适用于 2019 之前的版本
      *
      * <ul>
      *     <li>bit0: 0.车门锁闭 1.车门开启</li>
      *     <li>其他: 保留</li>
      * </ul>
      */
-    private int flags;
+    private int command;
 
     /** 解码时未知的控制参数 */
     private Map<String, String> unknownParams;
@@ -45,7 +51,7 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("flags=" + flags)
+                .add("command=" + command)
                 .add("unknownParams=" + (unknownParams == null ? "" : unknownParams))
                 .add("x0001=" + (x0001 == null ? "" : x0001))
         ;
@@ -56,18 +62,14 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
      *
      * @param version 版本号
      * @param fieldEncoder 控制参数编码方法
-     * @param target 要编码的对象
      */
-    protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder, B8500 target) {
-        Params.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, target));
+    protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder) {
+        Params.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, this));
     }
 
-    /**
-     * 清除控制参数
-     * @param target 要清除其上控制参数的对象
-     */
-    protected void clearParams(B8500 target) {
-        Params.CODECS.values().forEach(f -> f.clear(target));
+    /** 清除控制参数 */
+    protected void clearParams() {
+        Params.CODECS.values().forEach(f -> f.clear(this));
     }
 
     /**
@@ -75,13 +77,12 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
      * @param id 控制参数 ID
      * @param version 版本号
      * @param buf 字节缓冲区
-     * @param target 要解码的对象
      * @return 是否成功
      */
-    protected boolean decodeParam(int id, int version, ByteBuf buf, B8500 target) {
+    protected boolean decodeParam(int id, int version, ByteBuf buf) {
         final FieldCodec<Integer, B8500, ?> param = Params.CODECS.get(id);
         if (param != null) {
-            param.decode(version, buf, target);
+            param.decode(version, buf, this);
             return true;
         }
         return false;
@@ -90,30 +91,28 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
     @Override
     public void encode(int version, ByteBuf buf) {
         if (version > 0) {
-            Codec.writeCountHeadedContent(buf, IntUnit.WORD, this, (b, that) -> {
+            Codec.writeCountHeadedContent(buf, IntUnit.WORD, this, (b, v) -> {
                 final CountedFieldEncoder<Integer> encoder = new CountedFieldEncoder<>(b, Codec::writeWord);
-                encodeParams(version, encoder, that);
+                encodeParams(version, encoder);
                 return encoder.getCount();
             });
             return;
         }
 
-        Codec.writeByte(buf, flags);
+        Codec.writeByte(buf, command);
     }
 
     @Override
     public void decode(int version, ByteBuf buf) {
-        if (unknownParams != null) {
-            unknownParams.clear();
-        }
-        flags = 0;
-        clearParams(this);
+        command = 0;
+        unknownParams = null;
+        clearParams();
 
         if (version > 0) {
             int cnt = Codec.readWord(buf);
             while (cnt-- > 0) {
                 final int id = Codec.readWord(buf);
-                if (!decodeParam(id, version, buf, this)) {
+                if (!decodeParam(id, version, buf)) {
                     putUnknownParam(id, buf);
                     // ！！！没有长度头，无法继续！！！
                     break;
@@ -122,24 +121,24 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
             return;
         }
 
-        flags = Codec.readByte(buf);
+        command = Codec.readByte(buf);
     }
 
 
     /**
-     * 获取控制标志，仅适用于 2019 之前的版本
-     * @return BYTE 控制标志，仅适用于 2019 之前的版本
+     * 获取控制指令标志位，仅适用于 2019 之前的版本
+     * @return BYTE 控制指令标志位，仅适用于 2019 之前的版本
      */
-    public int getFlags() {
-        return flags;
+    public int getCommand() {
+        return command;
     }
 
     /**
-     * 设置控制标志，仅适用于 2019 之前的版本
-     * @param flags BYTE 控制标志，仅适用于 2019 之前的版本
+     * 设置控制指令标志位，仅适用于 2019 之前的版本
+     * @param command BYTE 控制指令标志位，仅适用于 2019 之前的版本
      */
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setCommand(int command) {
+        this.command = command;
     }
 
     /**
@@ -148,6 +147,14 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
      */
     public Map<String, String> getUnknownParams() {
         return unknownParams;
+    }
+
+    /**
+     * 设置解码时未知的控制参数
+     * @param unknownParams 解码时未知的控制参数
+     */
+    public void setUnknownParams(Map<String, String> unknownParams) {
+        this.unknownParams = unknownParams;
     }
 
     /**
@@ -169,40 +176,20 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
 
     private void putUnknownParam(int id, ByteBuf buf) {
         if (unknownParams == null) {
-            unknownParams = new HashMap<>();
+            unknownParams = new LinkedHashMap<>();
         }
-        unknownParams.put(String.format("%#06x", id), ByteBufUtil.hexDump(buf));
+        unknownParams.put(IntUtil.wordHexString(id), ByteBufUtil.hexDump(buf));
     }
 
     private final static class Params {
 
-        private final static Map<Integer, FieldCodec<Integer, B8500, ?>> CODECS = PlatformDependent.newConcurrentHashMap();
+        private final static Map<Integer, FieldCodec<Integer, B8500, ?>> CODECS = new LinkedHashMap<>();
 
         static {
             // 0x0001 车门 BYTE 0.车门锁闭 1.车门开启
-            register(0x0001, B8500::getX0001, B8500::setX0001, ver -> Codec::writeByte, ver -> Codec::readByte);
+            CODECS.put(0x0001, new FieldCodec<>(0x0001, B8500::getX0001, B8500::setX0001, ver -> Codec::writeByte, ver -> Codec::readByte));
          }
 
-        private static <V> void register(int id, Function<B8500, V> getter, BiConsumer<B8500, V> setter,
-                                         Function<Integer, BiConsumer<ByteBuf, V>> encoderSupplier,
-                                         Function<Integer, Function<ByteBuf, V>> decoderSupplier) {
-            CODECS.put(id, new FieldCodec<>(id, getter, setter, encoderSupplier, decoderSupplier));
-        }
-
-        private static <V extends Codec> void register(int id,
-                                                       Function<B8500, V> getter, BiConsumer<B8500, V> setter,
-                                                       Supplier<V> valueCreator) {
-            Objects.requireNonNull(valueCreator);
-            final Function<Integer, BiConsumer<ByteBuf, V>> encoderSupplier = ver -> (b, v) -> v.encode(ver, b);
-            final Function<Integer, Function<ByteBuf, V>> decoderSupplier = ver -> b -> {
-                final V v = valueCreator.get();
-                v.decode(ver, b);
-                return v;
-            };
-            CODECS.put(id, new FieldCodec<>(id, getter, setter, encoderSupplier, decoderSupplier));
-        }
-
     }
-
 
 }

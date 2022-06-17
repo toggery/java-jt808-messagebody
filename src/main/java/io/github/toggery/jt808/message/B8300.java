@@ -23,7 +23,7 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
      *     <li>其他: 保留</li>
      * </ul>
      */
-    private int flags;
+    private int props;
 
     /**
      * BYTE 类型 // 2019 new
@@ -41,7 +41,7 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("flags=" + flags)
+                .add("props=" + props)
                 .add("type=" + type)
                 .add("content=" + (content == null ? "" : content))
         ;
@@ -49,7 +49,7 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
 
     @Override
     public void encode(int version, ByteBuf buf) {
-        Codec.writeByte(buf, flags);
+        Codec.writeByte(buf, props);
 
         if (version > 0) {
             Codec.writeByte(buf, type);
@@ -60,7 +60,7 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
 
     @Override
     public void decode(int version, ByteBuf buf) {
-        flags = Codec.readByte(buf);
+        props = Codec.readByte(buf);
 
         if (version > 0) {
             type = Codec.readByte(buf);
@@ -84,8 +84,8 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
      * </ul>
      * @return BYTE 标志
      */
-    public int getFlags() {
-        return flags;
+    public int getProps() {
+        return props;
     }
 
     /**
@@ -98,10 +98,10 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
      *     <li>bit5: 0.中心导航信息，1.CAN 故障码信息 //2013 new</li>
      *     <li>其他: 保留</li>
      * </ul>
-     * @param flags BYTE 标志
+     * @param props BYTE 标志
      */
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setProps(int props) {
+        this.props = props;
     }
 
     /**

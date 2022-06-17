@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 位置扩展信息 0x11 超速报警附加信息，见表28
+ * JT/T 消息体 位置扩展信息 0x11 超速报警附加信息，见表 28
  *
  * @author togger
  */

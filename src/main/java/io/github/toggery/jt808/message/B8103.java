@@ -2,9 +2,11 @@ package io.github.toggery.jt808.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.util.internal.PlatformDependent;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -210,7 +212,7 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
     /** 0x0103 WORD CAN 总线通道 2 上传时间间隔，单位为秒（s），0 表示不上传 */
     private Integer x0103;
 
-    /** 0x0110 BYTE[8] CAN 总线ID单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID */
+    /** 0x0110 BYTE[8] CAN 总线 ID 单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID */
     private byte[] x0110;
 
 
@@ -303,7 +305,7 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
                 .add("x0101=" + (x0101 == null ? "" : x0101))
                 .add("x0102=" + (x0102 == null ? "" : x0102))
                 .add("x0103=" + (x0103 == null ? "" : x0103))
-                .add("x0110=" + Arrays.toString(x0110))
+                .add("x0110=" + (x0110 == null ? "" : ByteBufUtil.hexDump(x0110)))
         ;
     }
 
@@ -312,18 +314,14 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
      *
      * @param version 版本号
      * @param fieldEncoder 终端参数编码方法
-     * @param target 要编码的对象
      */
-    protected void encodeParams(int version, CountedFieldEncoder<Long> fieldEncoder, B8103 target) {
-        Params.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, target));
+    protected void encodeParams(int version, CountedFieldEncoder<Long> fieldEncoder) {
+        Params.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, this));
     }
 
-    /**
-     * 清除终端参数
-     * @param target 要清除其上终端参数的对象
-     */
-    protected void clearParams(B8103 target) {
-        Params.CODECS.values().forEach(f -> f.clear(target));
+    /** 清除终端参数 */
+    protected void clearParams() {
+        Params.CODECS.values().forEach(f -> f.clear(this));
     }
 
     /**
@@ -331,13 +329,12 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
      * @param id 终端参数 ID
      * @param version 版本号
      * @param buf 字节缓冲区
-     * @param target 要解码的对象
      * @return 是否成功
      */
-    protected boolean decodeParam(long id, int version, ByteBuf buf, B8103 target) {
+    protected boolean decodeParam(long id, int version, ByteBuf buf) {
         final FieldCodec<Long, B8103, ?> param = Params.CODECS.get(id);
         if (param != null) {
-            param.decode(version, buf, target);
+            param.decode(version, buf, this);
             return true;
         }
         return false;
@@ -345,26 +342,24 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
 
     @Override
     public void encode(int version, ByteBuf buf) {
-        Codec.writeCountHeadedContent(buf, IntUnit.BYTE, this, (b, that) -> {
+        Codec.writeCountHeadedContent(buf, IntUnit.BYTE, this, (b, v) -> {
             final CountedFieldEncoder<Long> encoder =
                     new CountedLengthHeadedFieldEncoder<>(b, Codec::writeDoubleWord, IntUnit.BYTE);
-            encodeParams(version, encoder, that);
+            encodeParams(version, encoder);
             return encoder.getCount();
         });
     }
 
     @Override
     public void decode(int version, ByteBuf buf) {
-        if (unknownParams != null) {
-            unknownParams.clear();
-        }
-        clearParams(this);
+        unknownParams = null;
+        clearParams();
 
         int cnt = Codec.readByte(buf);
         while (cnt-- > 0) {
             final long id = Codec.readDoubleWord(buf);
             final ByteBuf fieldBuf = Codec.readSlice(buf, IntUnit.BYTE);
-            if (!decodeParam(id, version, fieldBuf, this)) {
+            if (!decodeParam(id, version, fieldBuf)) {
                 putUnknownParam(id, fieldBuf);
             }
         }
@@ -376,6 +371,14 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
      * @return 解码时未知的终端参数
      */
     public Map<String, String> getUnknownParams() { return unknownParams; }
+
+    /**
+     * 设置解码时未知的终端参数
+     * @param unknownParams 解码时未知的终端参数
+     */
+    public void setUnknownParams(Map<String, String> unknownParams) {
+        this.unknownParams = unknownParams;
+    }
 
     /**
      * 获取终端心跳发送间隔，单位为秒（s）
@@ -762,64 +765,64 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 获取从服务器 APN
-     * @return 0x0023 STRING 从服务器 APN，该值为空时，终端应使用主服务器相同配置
+     * 获取从服务器 APN // 2019 new
+     * @return 0x0023 STRING 从服务器 APN，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public String getX0023() {
         return x0023;
     }
 
     /**
-     * 设置从服务器 APN
-     * @param x0023 0x0023 STRING 从服务器 APN，该值为空时，终端应使用主服务器相同配置
+     * 设置从服务器 APN // 2019 new
+     * @param x0023 0x0023 STRING 从服务器 APN，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public void setX0023(String x0023) {
         this.x0023 = x0023;
     }
 
     /**
-     * 获取从服务器无线通信拨号用户名
-     * @return 0x0024 STRING 从服务器无线通信拨号用户名，该值为空时，终端应使用主服务器相同配置
+     * 获取从服务器无线通信拨号用户名 // 2019 new
+     * @return 0x0024 STRING 从服务器无线通信拨号用户名，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public String getX0024() {
         return x0024;
     }
 
     /**
-     * 设置从服务器无线通信拨号用户名
-     * @param x0024 0x0024 STRING 从服务器无线通信拨号用户名，该值为空时，终端应使用主服务器相同配置
+     * 设置从服务器无线通信拨号用户名 // 2019 new
+     * @param x0024 0x0024 STRING 从服务器无线通信拨号用户名，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public void setX0024(String x0024) {
         this.x0024 = x0024;
     }
 
     /**
-     * 获取从服务器无线通信拨号密码
-     * @return 0x0025 STRING 从服务器无线通信拨号密码，该值为空时，终端应使用主服务器相同配置
+     * 获取从服务器无线通信拨号密码 // 2019 new
+     * @return 0x0025 STRING 从服务器无线通信拨号密码，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public String getX0025() {
         return x0025;
     }
 
     /**
-     * 设置从服务器无线通信拨号密码
-     * @param x0025 0x0025 STRING 从服务器无线通信拨号密码，该值为空时，终端应使用主服务器相同配置
+     * 设置从服务器无线通信拨号密码 // 2019 new
+     * @param x0025 0x0025 STRING 从服务器无线通信拨号密码，该值为空时，终端应使用主服务器相同配置 // 2019 new
      */
     public void setX0025(String x0025) {
         this.x0025 = x0025;
     }
 
     /**
-     * 获取从服务器备份地址、IP 或域名
-     * @return 0x0026 STRING 从服务器备份地址、IP 或域名，主机和端口用冒号分割，多个服务器使用分号分割
+     * 获取从服务器备份地址、IP 或域名 // 2019 new
+     * @return 0x0026 STRING 从服务器备份地址、IP 或域名，主机和端口用冒号分割，多个服务器使用分号分割 // 2019 new
      */
     public String getX0026() {
         return x0026;
     }
 
     /**
-     * 设置从服务器备份地址、IP 或域名
-     * @param x0026 0x0026 STRING 从服务器备份地址、IP 或域名，主机和端口用冒号分割，多个服务器使用分号分割
+     * 设置从服务器备份地址、IP 或域名 // 2019 new
+     * @param x0026 0x0026 STRING 从服务器备份地址、IP 或域名，主机和端口用冒号分割，多个服务器使用分号分割 // 2019 new
      */
     public void setX0026(String x0026) {
         this.x0026 = x0026;
@@ -1738,16 +1741,16 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 获取 CAN 总线ID单独采集参数
-     * @return 0x0110 BYTE[8] CAN 总线ID单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID
+     * 获取 CAN 总线 ID 单独采集参数
+     * @return 0x0110 BYTE[8] CAN 总线 ID 单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID
      */
     public byte[] getX0110() {
         return x0110;
     }
 
     /**
-     * 设置 CAN 总线ID单独采集参数
-     * @param x0110 0x0110 BYTE[8] CAN 总线ID单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID
+     * 设置 CAN 总线 ID 单独采集参数
+     * @param x0110 0x0110 BYTE[8] CAN 总线 ID 单独采集参数，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1∶扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID
      */
     public void setX0110(byte[] x0110) {
         this.x0110 = x0110;
@@ -1756,14 +1759,14 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
 
     private void putUnknownParam(long id, ByteBuf buf) {
         if (unknownParams == null) {
-            unknownParams = new HashMap<>();
+            unknownParams = new LinkedHashMap<>();
         }
-        unknownParams.put(String.format("%#06x", id), ByteBufUtil.hexDump(buf));
+        unknownParams.put(IntUtil.wordHexString((int) id), ByteBufUtil.hexDump(buf));
     }
 
     private final static class Params {
 
-        private final static Map<Long, FieldCodec<Long, B8103, ?>> CODECS = PlatformDependent.newConcurrentHashMap();
+        private final static Map<Long, FieldCodec<Long, B8103, ?>> CODECS = new LinkedHashMap<>();
 
         static {
 
@@ -1867,8 +1870,8 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
 
             // 0x0032 BYTE[4] 违规行驶时段范围，精确到分。BYTE1：违规行驶开始时间的小时部分；BYTE2：违规行驶开始时间的分钟部分；BYTE3：违规行驶结束时间的小时部分；BYTE4：违规行驶结束时间的分钟部分。示例∶0xl6320AIE，表示当天晚上10点50分到第二天早上10点30 分属于违规行驶时段 // 2019 new
             register(0x0032, B8103::getX0032, B8103::setX0032,
-                    ver -> (b, v) -> Codec.writeBytes(b, v, -4, PadChar.NUL),
-                    ver -> b -> Codec.readBytes(b, 4, PadChar.NUL)
+                    ver -> ver > 0 ? (b, v) -> Codec.writeBytes(b, v, -4, PadChar.NUL) : null,
+                    ver -> ver > 0 ? b -> Codec.readBytes(b, 4, PadChar.NUL) : null
             );
 
             // 0x0040 STRING 监控平台电话号码
@@ -1975,7 +1978,7 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
 
             // 0x0110 BYTE[8] CAN 总线 ID 单独采集设置，bit63-bit32 表示此 ID 采集时间间隔（ms），0 表示不采集；bit31 表示 CAN 通道号，0：CAN1，1：CAN2；bit30 表示帧类型，0：标准帧，1：扩展帧；bit29 表示数据采集方式，0：原始数据，1：采集区间的计算值；bit28-bit0 表示 CAN 总线 ID
             register(0x0110, B8103::getX0110, B8103::setX0110,
-                    ver -> (b, v) -> Codec.readBytes(b, -8, PadChar.NUL),
+                    ver -> (b, v) -> Codec.writeBytes(b, v, -8, PadChar.NUL),
                     ver -> b -> Codec.readBytes(b, 8, PadChar.NUL)
             );
         }

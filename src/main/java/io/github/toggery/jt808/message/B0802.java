@@ -86,6 +86,11 @@ public class B0802 extends AbstractToStringJoiner implements Codec {
      */
     public static class Media extends B0200 {
 
+        /** 实例化一个新的 {@link Media} */
+        public Media() {
+            super(true);
+        }
+
         /** DWORD 多媒体数据 ID，值大于 0 */
         private long id;
 

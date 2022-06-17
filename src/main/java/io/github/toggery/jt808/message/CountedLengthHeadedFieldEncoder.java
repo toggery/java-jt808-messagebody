@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
- * JT/T 累计计数字段编码器（含字段值前置长度）
+ * JT/T 含前置字段值长度的累计计数字段编码器
  *
  * @param <I> 字段 {@code ID} 类型
  * @author togger

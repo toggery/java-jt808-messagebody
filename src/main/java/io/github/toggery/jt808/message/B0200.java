@@ -2,9 +2,8 @@ package io.github.toggery.jt808.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.util.internal.PlatformDependent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -18,6 +17,20 @@ import java.util.function.Supplier;
  * @author togger
  */
 public class B0200 extends AbstractToStringJoiner implements Codec {
+
+    /** 实例化一个新的 {@link B0200}，不排除附加信息（编码解码） */
+    public B0200() {
+        this(false);
+    }
+
+    /**
+     * 实例化一个新的 {@link B0200}
+     * @param excludeExtras 是否排除附加信息（编码解码）
+     */
+    protected B0200(boolean excludeExtras) {
+        this.excludeExtras = excludeExtras;
+    }
+
 
     /** DWORD 报警标志位，定义见表 25 */
     private long alarmBits;
@@ -43,118 +56,13 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     /** BCD[6] 时间，yyMMddHHmmss（GMT+8 时间，本标准中之后涉及的时间均采用此时区） */
     private String time;
 
+
+    /** 是否排除附加信息（编码解码） */
+    private boolean excludeExtras;
+
     /** 未知的附加信息 */
     private Map<String, String> unknownExtras;
 
-    
-    @Override
-    protected void toStringJoiner(StringJoiner joiner) {
-        joiner
-                .add("alarmBits=" + alarmBits)
-                .add("statusBits=" + statusBits)
-                .add("latitude=" + latitude)
-                .add("longitude=" + longitude)
-                .add("altitude=" + altitude)
-                .add("speed=" + speed)
-                .add("direction=" + direction)
-                .add("time=" + (time == null ? "" : time))
-                .add("unknownExtras=" + (unknownExtras == null ? "" : unknownExtras))
-                .add("x01=" + (x01 == null ? "" : x01))
-                .add("x02=" + (x02 == null ? "" : x02))
-                .add("x03=" + (x03 == null ? "" : x03))
-                .add("x04=" + (x04 == null ? "" : x04))
-                .add("x05=" + (x05 == null ? "" : ByteBufUtil.hexDump(x05)))
-                .add("x06=" + (x06 == null ? "" : x06))
-                .add("x11=" + (x11 == null ? "" : x11))
-                .add("x12=" + (x12 == null ? "" : x12))
-                .add("x13=" + (x13 == null ? "" : x13))
-                .add("x25=" + (x25 == null ? "" : x25))
-                .add("x2A=" + (x2A == null ? "" : x2A))
-                .add("x2B=" + (x2B == null ? "" : x2B))
-                .add("x30=" + (x30 == null ? "" : x30))
-                .add("x31=" + (x31 == null ? "" : x31))
-        ;
-    }
-
-    /**
-     * 编码附加信息
-     *
-     * @param version 版本号
-     * @param fieldEncoder 附加信息编码方法
-     * @param target 要编码的对象
-     */
-    protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder, B0200 target) {
-        Extras.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, target));
-    }
-
-    /**
-     * 清除附加信息
-     * @param target 要清除其上附加信息的对象
-     */
-    protected void clearParams(B0200 target) {
-        Extras.CODECS.values().forEach(f -> f.clear(target));
-    }
-
-    /**
-     * 解码附加信息
-     * @param id 附加信息 ID
-     * @param version 版本号
-     * @param buf 字节缓冲区
-     * @param target 要解码的对象
-     * @return 是否成功
-     */
-    protected boolean decodeParam(int id, int version, ByteBuf buf, B0200 target) {
-        final FieldCodec<Integer, B0200, ?> param = Extras.CODECS.get(id);
-        if (param != null) {
-            param.decode(version, buf, target);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void encode(int version, ByteBuf buf) {
-        Codec.writeDoubleWord(buf, alarmBits);
-        Codec.writeDoubleWord(buf, statusBits);
-        Codec.writeDoubleWord(buf, latitude);
-        Codec.writeDoubleWord(buf, longitude);
-        Codec.writeWord(buf, altitude);
-        Codec.writeWord(buf, speed);
-        Codec.writeWord(buf, direction);
-        Codec.writeBcd(buf, time, 6);
-
-        final CountedFieldEncoder<Integer> encoder =
-                new CountedLengthHeadedFieldEncoder<>(buf, Codec::writeByte, IntUnit.BYTE);
-        encodeParams(version, encoder, this);
-    }
-
-    @Override
-    public void decode(int version, ByteBuf buf) {
-        if (unknownExtras != null) {
-            unknownExtras.clear();
-        }
-        clearParams(this);
-
-        alarmBits = Codec.readDoubleWord(buf);
-        statusBits = Codec.readDoubleWord(buf);
-        latitude = Codec.readDoubleWord(buf);
-        longitude = Codec.readDoubleWord(buf);
-        altitude = Codec.readWord(buf);
-        speed = Codec.readWord(buf);
-        direction = Codec.readWord(buf);
-        time = Codec.readBcd(buf, 6, false);
-
-
-        while (buf.isReadable()) {
-            final int id = Codec.readByte(buf);
-            final ByteBuf fieldBuf = Codec.readSlice(buf, IntUnit.BYTE);
-            if (!decodeParam(id, version, fieldBuf, this)) {
-                putUnknownExtra(id, fieldBuf);
-            }
-        }
-    }
-
-    
     /** 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数 */
     private Long x01;
     /** 0x02 WORD 油量，单位为 0.1L，对应车上油量表读数 */
@@ -188,6 +96,111 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     private Integer x30;
     /** 0x31 BYTE GNSS 定位卫星数 */
     private Integer x31;
+
+
+    @Override
+    protected void toStringJoiner(StringJoiner joiner) {
+        joiner
+                .add("alarmBits=" + alarmBits)
+                .add("statusBits=" + statusBits)
+                .add("latitude=" + latitude)
+                .add("longitude=" + longitude)
+                .add("altitude=" + altitude)
+                .add("speed=" + speed)
+                .add("direction=" + direction)
+                .add("time=" + (time == null ? "" : time))
+                .add("excludeExtras=" + excludeExtras)
+                .add("unknownExtras=" + (unknownExtras == null ? "" : unknownExtras))
+                .add("x01=" + (x01 == null ? "" : x01))
+                .add("x02=" + (x02 == null ? "" : x02))
+                .add("x03=" + (x03 == null ? "" : x03))
+                .add("x04=" + (x04 == null ? "" : x04))
+                .add("x05=" + (x05 == null ? "" : ByteBufUtil.hexDump(x05)))
+                .add("x06=" + (x06 == null ? "" : x06))
+                .add("x11=" + (x11 == null ? "" : x11))
+                .add("x12=" + (x12 == null ? "" : x12))
+                .add("x13=" + (x13 == null ? "" : x13))
+                .add("x25=" + (x25 == null ? "" : x25))
+                .add("x2A=" + (x2A == null ? "" : x2A))
+                .add("x2B=" + (x2B == null ? "" : x2B))
+                .add("x30=" + (x30 == null ? "" : x30))
+                .add("x31=" + (x31 == null ? "" : x31))
+        ;
+    }
+
+    /**
+     * 编码附加信息
+     *
+     * @param version 版本号
+     * @param fieldEncoder 附加信息编码方法
+     */
+    protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder) {
+        Extras.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, this));
+    }
+
+    /** 清除附加信息 */
+    protected void clearParams() {
+        Extras.CODECS.values().forEach(f -> f.clear(this));
+    }
+
+    /**
+     * 解码附加信息
+     * @param id 附加信息 ID
+     * @param version 版本号
+     * @param buf 字节缓冲区
+     * @return 是否成功
+     */
+    protected boolean decodeParam(int id, int version, ByteBuf buf) {
+        final FieldCodec<Integer, B0200, ?> param = Extras.CODECS.get(id);
+        if (param != null) {
+            param.decode(version, buf, this);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void encode(int version, ByteBuf buf) {
+        Codec.writeDoubleWord(buf, alarmBits);
+        Codec.writeDoubleWord(buf, statusBits);
+        Codec.writeDoubleWord(buf, latitude);
+        Codec.writeDoubleWord(buf, longitude);
+        Codec.writeWord(buf, altitude);
+        Codec.writeWord(buf, speed);
+        Codec.writeWord(buf, direction);
+        Codec.writeBcd(buf, time, 6);
+
+        if (excludeExtras) return;
+
+        final CountedFieldEncoder<Integer> encoder =
+                new CountedLengthHeadedFieldEncoder<>(buf, Codec::writeByte, IntUnit.BYTE);
+        encodeParams(version, encoder);
+    }
+
+    @Override
+    public void decode(int version, ByteBuf buf) {
+        alarmBits = Codec.readDoubleWord(buf);
+        statusBits = Codec.readDoubleWord(buf);
+        latitude = Codec.readDoubleWord(buf);
+        longitude = Codec.readDoubleWord(buf);
+        altitude = Codec.readWord(buf);
+        speed = Codec.readWord(buf);
+        direction = Codec.readWord(buf);
+        time = Codec.readBcd(buf, 6, false);
+
+        if (excludeExtras) return;
+        unknownExtras = null;
+        clearParams();
+
+        while (buf.isReadable()) {
+            final int id = Codec.readByte(buf);
+            final ByteBuf fieldBuf = Codec.readSlice(buf, IntUnit.BYTE);
+            if (!decodeParam(id, version, fieldBuf)) {
+                putUnknownExtra(id, fieldBuf);
+            }
+        }
+    }
+
 
     /**
      * 获取报警标志位
@@ -318,11 +331,35 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
+     * 获取是否排除附加信息（编码解码）
+     * @return 是否排除附加信息（编码解码）
+     */
+    public boolean getExcludeExtras() {
+        return excludeExtras;
+    }
+
+    /**
+     * 设置是否排除附加信息（编码解码）
+     * @param excludeExtras 是否排除附加信息（编码解码）
+     */
+    public void setExcludeExtras(boolean excludeExtras) {
+        this.excludeExtras = excludeExtras;
+    }
+
+    /**
      * 获取解码时未知的附加信息
      * @return 解码时未知的附加信息
      */
     public Map<String, String> getUnknownExtras() {
         return unknownExtras;
+    }
+
+    /**
+     * 设置解码时未知的附加信息
+     * @param unknownExtras 解码时未知的附加信息
+     */
+    public void setUnknownExtras(Map<String, String> unknownExtras) {
+        this.unknownExtras = unknownExtras;
     }
 
     /**
@@ -390,7 +427,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 获取胎压，单位为 Pa
+     * 获取胎压，单位为 Pa // 2019 new
      * @return 0x05 BYTE[30] 胎压，单位为 Pa，标定轮子的顺序为从车头开始从左到右顺序排列，定长 30 字节，多余的字节为 0xFF，表示无效数据 // 2019 new
      */
     public byte[] getX05() {
@@ -398,7 +435,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 设置胎压，单位为 Pa
+     * 设置胎压，单位为 Pa // 2019 new
      * @param x05 0x05 BYTE[30] 胎压，单位为 Pa，标定轮子的顺序为从车头开始从左到右顺序排列，定长 30 字节，多余的字节为 0xFF，表示无效数据 // 2019 new
      */
     public void setX05(byte[] x05) {
@@ -406,7 +443,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 获取车厢温度，单位为摄氏度
+     * 获取车厢温度，单位为摄氏度 // 2019 new
      * @return 0x06 SHORT 车厢温度，单位为摄氏度，取值范围为 -32767 ~ 32767，最高位为1表示负数 // 2019 new
      */
     public Short getX06() {
@@ -414,7 +451,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 设置车厢温度，单位为摄氏度
+     * 设置车厢温度，单位为摄氏度 // 2019 new
      * @param x06 0x06 SHORT 车厢温度，单位为摄氏度，取值范围为 -32767 ~ 32767，最高位为1表示负数 // 2019 new
      */
     public void setX06(Short x06) {
@@ -552,14 +589,14 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
 
     private void putUnknownExtra(int id, ByteBuf buf) {
         if (unknownExtras == null) {
-            unknownExtras = new HashMap<>();
+            unknownExtras = new LinkedHashMap<>();
         }
-        unknownExtras.put(String.format("%#04x", id), ByteBufUtil.hexDump(buf));
+        unknownExtras.put(IntUtil.byteHexString(id), ByteBufUtil.hexDump(buf));
     }
 
     private final static class Extras {
 
-        private final static Map<Integer, FieldCodec<Integer, B0200, ?>> CODECS = PlatformDependent.newConcurrentHashMap();
+        private final static Map<Integer, FieldCodec<Integer, B0200, ?>> CODECS = new LinkedHashMap<>();
 
         static {
 

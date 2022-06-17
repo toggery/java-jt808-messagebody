@@ -169,7 +169,7 @@ public class B8301 extends AbstractToStringJoiner implements Codec {
 
         /**
          * 获取事件 ID
-         * @return 事件 ID，若终端已有同 ID 的事件，则被覆盖
+         * @return BYTE 事件 ID，若终端已有同 ID 的事件，则被覆盖
          */
         public int getId() {
             return id;
@@ -177,7 +177,7 @@ public class B8301 extends AbstractToStringJoiner implements Codec {
 
         /**
          * 设置事件 ID
-         * @param id 事件 ID，若终端已有同 ID 的事件，则被覆盖
+         * @param id BYTE 事件 ID，若终端已有同 ID 的事件，则被覆盖
          */
         public void setId(int id) {
             this.id = id;

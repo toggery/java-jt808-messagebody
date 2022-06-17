@@ -305,7 +305,7 @@ public class B0107 extends AbstractToStringJoiner implements Codec {
      *     <li>bit5，0：不支持TD-LTE通信，1：支持TD-LTE通信；</li>
      *     <li>bit7，0：不支持其他通信方式，1：支持其他通信方式；</li>
      * </ul>
-     * @param comm 通信模块属性
+     * @param comm BYTE 通信模块属性
      */
     public void setComm(int comm) {
         this.comm = comm;

@@ -15,7 +15,7 @@ import java.util.StringJoiner;
  */
 public class B0705 extends AbstractToStringJoiner implements Codec {
 
-    /** BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，hh-mm-ss-msms */
+    /** BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，HHmmssmsms */
     private String time;
 
     /** CAN 总线数据列表 */
@@ -54,7 +54,7 @@ public class B0705 extends AbstractToStringJoiner implements Codec {
 
     /**
      * 获取 CAN 总线数据接收时间
-     * @return BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，hh-mm-ss-msms
+     * @return BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，HHmmssmsms
      */
     public String getTime() {
         return time;
@@ -62,7 +62,7 @@ public class B0705 extends AbstractToStringJoiner implements Codec {
 
     /**
      * 设置 CAN 总线数据接收时间
-     * @param time BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，hh-mm-ss-msms
+     * @param time BCD[5] CAN 总线数据接收时间，第 1 条 CAN 总线数据的接收时间，HHmmssmsms
      */
     public void setTime(String time) {
         this.time = time;
