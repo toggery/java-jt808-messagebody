@@ -18,7 +18,7 @@ public class B0104 extends B8103 {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("replySn=" + replySn)
+                .add(IntUtil.wordHexString("replySn=", replySn))
         ;
         super.toStringJoiner(joiner);
     }

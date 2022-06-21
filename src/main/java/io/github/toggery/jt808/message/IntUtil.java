@@ -52,7 +52,7 @@ public final class IntUtil {
      * @return 十六进制字符串
      */
     public static String doubleWordHexString(long value) {
-        return String.format("%#10x", value);
+        return String.format("%#010x", value);
     }
 
     /**
@@ -62,7 +62,7 @@ public final class IntUtil {
      * @return 十六进制字符串
      */
     public static String doubleWordHexString(String prefix, long value) {
-        return String.format("%s%#10x", prefix, value);
+        return String.format("%s%#010x", prefix, value);
     }
 
 }

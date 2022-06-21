@@ -21,16 +21,16 @@ public class B8001 extends AbstractToStringJoiner implements Codec {
     private int result;
 
     /** 终端信息，不参与编码解码 */
-    private TerminalInfo terminal;
+    private TerminalInfo terminalInfo;
 
 
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("replySn=" + replySn)
-                .add("replyId=" + replyId)
+                .add(IntUtil.wordHexString("replySn=", replySn))
+                .add(IntUtil.wordHexString("replyId=", replyId))
                 .add("result=" + result)
-                .add("terminal=" + (terminal == null ? "" : terminal))
+                .add("terminalInfo=" + (terminalInfo == null ? "" : terminalInfo))
         ;
     }
 
@@ -110,16 +110,16 @@ public class B8001 extends AbstractToStringJoiner implements Codec {
      * 获取终端信息，不参与编码解码
      * @return 终端信息，不参与编码解码
      */
-    public TerminalInfo getTerminal() {
-        return terminal;
+    public TerminalInfo getTerminalInfo() {
+        return terminalInfo;
     }
 
     /**
      * 设置终端信息，不参与编码解码
-     * @param terminal 终端信息，不参与编码解码
+     * @param terminalInfo 终端信息，不参与编码解码
      */
-    public void setTerminal(TerminalInfo terminal) {
-        this.terminal = terminal;
+    public void setTerminalInfo(TerminalInfo terminalInfo) {
+        this.terminalInfo = terminalInfo;
     }
 
     /**

@@ -22,7 +22,7 @@ public class B8A00 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("e=" + e)
+                .add(IntUtil.doubleWordHexString("e=", e))
                 .add("n=" + (n == null ? "" : ByteBufUtil.hexDump(n)))
         ;
     }

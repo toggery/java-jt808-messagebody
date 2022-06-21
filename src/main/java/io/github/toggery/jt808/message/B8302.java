@@ -35,7 +35,7 @@ public class B8302 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("props=" + props)
+                .add(IntUtil.byteHexString("props=", props))
                 .add("question=" + (question == null ? "" : question))
                 .add("options=" + options)
         ;

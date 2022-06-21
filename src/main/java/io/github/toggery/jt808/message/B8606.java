@@ -47,7 +47,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
                 .add("id=" + id)
-                .add("props=" + props)
+                .add(IntUtil.wordHexString("props=", props))
                 .add("startTime=" + (startTime == null ? "" : startTime))
                 .add("endTime=" + (endTime == null ? "" : endTime))
                 .add("name=" + (name == null ? "" : name))
@@ -273,7 +273,7 @@ public class B8606 extends AbstractToStringJoiner implements Codec {
                     .add("latitude=" + latitude)
                     .add("longitude=" + longitude)
                     .add("width=" + width)
-                    .add("props=" + props)
+                    .add(IntUtil.byteHexString("props=", props))
                     .add("maxTime=" + maxTime)
                     .add("minTime=" + minTime)
                     .add("maxSpeed=" + maxSpeed)

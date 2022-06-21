@@ -24,7 +24,7 @@ public class B0700 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("replySn=" + replySn)
+                .add(IntUtil.wordHexString("replySn=", replySn))
                 .add("command=" + command)
                 .add("data=" + (data == null ? "" : ByteBufUtil.hexDump(data)))
         ;

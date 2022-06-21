@@ -76,15 +76,15 @@ public class B0107 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("type=" + type)
+                .add(IntUtil.wordHexString("type=", type))
                 .add("maker=" + (maker == null ? "" : maker))
                 .add("model=" + (model == null ? "" : model))
                 .add("id=" + (id == null ? "" : id))
                 .add("simId=" + (simId == null ? "" : simId))
                 .add("hw=" + (hw == null ? "" : hw))
                 .add("fm=" + (fm == null ? "" : fm))
-                .add("gnss=" + gnss)
-                .add("comm=" + comm)
+                .add(IntUtil.byteHexString("gnss=", gnss))
+                .add(IntUtil.byteHexString("comm=", comm))
         ;
     }
 

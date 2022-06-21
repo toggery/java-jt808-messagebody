@@ -32,7 +32,7 @@ public class B8900 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("type=" + type)
+                .add(IntUtil.byteHexString("type=", type))
                 .add("data=" + (data == null ? "" : ByteBufUtil.hexDump(data)))
         ;
     }

@@ -41,7 +41,7 @@ public class B8300 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("props=" + props)
+                .add(IntUtil.byteHexString("props=", props))
                 .add("type=" + type)
                 .add("content=" + (content == null ? "" : content))
         ;

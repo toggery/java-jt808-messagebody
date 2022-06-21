@@ -180,7 +180,7 @@ public class B8602 extends AbstractToStringJoiner implements Codec {
         protected void toStringJoiner(StringJoiner joiner) {
             joiner
                     .add("id=" + id)
-                    .add("props=" + props)
+                    .add(IntUtil.wordHexString("props=", props))
                     .add("latitudeTopLeft=" + latitudeTopLeft)
                     .add("longitudeTopLeft=" + longitudeTopLeft)
                     .add("latitudeBottomRight=" + latitudeBottomRight)

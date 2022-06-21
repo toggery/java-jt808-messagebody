@@ -63,9 +63,9 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     /** 未知的附加信息 */
     private Map<String, String> unknownExtras;
 
-    /** 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数 */
+    /** 0x01 DWORD 里程，单位为 0.1 km，对应车上里程表读数 */
     private Long x01;
-    /** 0x02 WORD 油量，单位为 0.1L，对应车上油量表读数 */
+    /** 0x02 WORD 油量，单位为 0.1 L，对应车上油量表读数 */
     private Integer x02;
     /** 0x03 WORD 行驶记录功能获取的速度，单位为 0.1km/h */
     private Integer x03;
@@ -101,8 +101,8 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("alarmBits=" + alarmBits)
-                .add("statusBits=" + statusBits)
+                .add(IntUtil.doubleWordHexString("alarmBits=", alarmBits))
+                .add(IntUtil.doubleWordHexString("statusBits=", statusBits))
                 .add("latitude=" + latitude)
                 .add("longitude=" + longitude)
                 .add("altitude=" + altitude)
@@ -110,6 +110,10 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
                 .add("direction=" + direction)
                 .add("time=" + (time == null ? "" : time))
                 .add("excludeExtras=" + excludeExtras)
+        ;
+        if (excludeExtras) return;
+
+        joiner
                 .add("unknownExtras=" + (unknownExtras == null ? "" : unknownExtras))
                 .add("x01=" + (x01 == null ? "" : x01))
                 .add("x02=" + (x02 == null ? "" : x02))
@@ -120,9 +124,9 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
                 .add("x11=" + (x11 == null ? "" : x11))
                 .add("x12=" + (x12 == null ? "" : x12))
                 .add("x13=" + (x13 == null ? "" : x13))
-                .add("x25=" + (x25 == null ? "" : x25))
-                .add("x2A=" + (x2A == null ? "" : x2A))
-                .add("x2B=" + (x2B == null ? "" : x2B))
+                .add("x25=" + (x25 == null ? "" : IntUtil.doubleWordHexString(x25)))
+                .add("x2A=" + (x2A == null ? "" : IntUtil.wordHexString(x2A)))
+                .add("x2B=" + (x2B == null ? "" : IntUtil.doubleWordHexString(x2B)))
                 .add("x30=" + (x30 == null ? "" : x30))
                 .add("x31=" + (x31 == null ? "" : x31))
         ;
@@ -363,16 +367,16 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 获取里程，单位为 0.1km，对应车上里程表读数
-     * @return 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数
+     * 获取里程，单位为 0.1 km，对应车上里程表读数
+     * @return 0x01 DWORD 里程，单位为 0.1 km，对应车上里程表读数
      */
     public Long getX01() {
         return x01;
     }
 
     /**
-     * 设置里程，单位为 0.1km，对应车上里程表读数
-     * @param x01 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数
+     * 设置里程，单位为 0.1 km，对应车上里程表读数
+     * @param x01 0x01 DWORD 里程，单位为 0.1 km，对应车上里程表读数
      */
     public void setX01(Long x01) {
         this.x01 = x01;
@@ -387,8 +391,8 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
     }
 
     /**
-     * 设置油量，单位为 0.1L，对应车上油量表读数
-     * @param x02 0x02 WORD 油量，单位为 0.1L，对应车上油量表读数
+     * 设置油量，单位为 0.1 L，对应车上油量表读数
+     * @param x02 0x02 WORD 油量，单位为 0.1 L，对应车上油量表读数
      */
     public void setX02(Integer x02) {
         this.x02 = x02;
@@ -630,7 +634,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
             // 0x25 DWORD 扩展车辆信号状态位，参数项格式和定义见表 31
             register(0x25, B0200::getX25, B0200::setX25, ver -> Codec::writeDoubleWord, ver -> Codec::readDoubleWord);
 
-            // 0x2A WORD I0状态位，参数项格式和定义见表 32
+            // 0x2A WORD I0 状态位，参数项格式和定义见表 32
             register(0x2A, B0200::getX2A, B0200::setX2A, ver -> Codec::writeWord, ver -> Codec::readWord);
             // 0x2B DWORD 模拟量，bit[0~15]，AD0;bit[l6~31]，AD1
             register(0x2B, B0200::getX2B, B0200::setX2B, ver -> Codec::writeDoubleWord, ver -> Codec::readDoubleWord);

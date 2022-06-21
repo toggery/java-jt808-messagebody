@@ -5,13 +5,6 @@ import java.util.*;
 /**
  * JT/T 消息元数据
  *
- * <ul>
- *     <li>0x0F00~0x0FFF：终端上行消息保留</li>
- *     <li>0x8F00~0x8FFF：平台下行消息保留</li>
- *     <li>0xE000~0xEFFF：厂商自定义上行消息</li>
- *     <li>0xF000~0xFFFF：厂商自定义下行消息</li>
- * </ul>
- *
  * @author togger
  */
 public final class MessageMetadata extends AbstractToStringJoiner {

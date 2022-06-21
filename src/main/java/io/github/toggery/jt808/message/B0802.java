@@ -23,7 +23,7 @@ public class B0802 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("replySn=" + replySn)
+                .add(IntUtil.wordHexString("replySn=", replySn))
                 .add("medias=" + medias)
         ;
     }

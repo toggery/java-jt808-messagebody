@@ -57,7 +57,7 @@ public class B0702 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("status=" + status)
+                .add(IntUtil.byteHexString("status=", status))
                 .add("time=" + (time == null ? "" : time))
                 .add("result=" + result)
                 .add("name=" + (name == null ? "" : name))

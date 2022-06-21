@@ -182,7 +182,7 @@ public class B8600 extends AbstractToStringJoiner implements Codec {
         protected void toStringJoiner(StringJoiner joiner) {
             joiner
                     .add("id=" + id)
-                    .add("props=" + props)
+                    .add(IntUtil.wordHexString("props=", props))
                     .add("latitude=" + latitude)
                     .add("longitude=" + longitude)
                     .add("radius=" + radius)

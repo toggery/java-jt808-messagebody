@@ -194,13 +194,13 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
     private Integer x0090;
     /** 0x0091 BYTE GNSS 波特率，0x00：4800；0x01：9600；0x02：19200；0x03：38400；0x04：57600；05：15200 */
     private Integer x0091;
-    /** 0x0092 BYTE GNSS 模块详细定位数据输出频率，0x00：500ms；0x01；1000ms（默认值）：0x02：2000ms；0x03：3000ms；Ox04：4000ms */
+    /** 0x0092 BYTE GNSS 模块详细定位数据输出频率，0x00：500ms；0x01；1000ms（默认值）：0x02：2000ms；0x03：3000ms；0x04：4000ms */
     private Integer x0092;
     /** 0x0093 DWORD GNSS 模块详细定位数据采集频率，单位为秒（s），默认为 1 */
     private Long x0093;
-    /** 0x0094 BYTE GNSS 模块详细定位数据上传方式，0x00：本地存储，不上传（默认值）；0x01：按时间间隔上传；0x02：按距离间隔上传；0xOB：按累计时间上传，达到传输时间后自动停止上传；0xOC：按累计距离上传，达到距离后自动停止上传；0x0D：按累计条数上传，达到上传条数后自动停止上传 */
+    /** 0x0094 BYTE GNSS 模块详细定位数据上传方式，0x00：本地存储，不上传（默认值）；0x01：按时间间隔上传；0x02：按距离间隔上传；0x0B：按累计时间上传，达到传输时间后自动停止上传；0x0C：按累计距离上传，达到距离后自动停止上传；0x0D：按累计条数上传，达到上传条数后自动停止上传 */
     private Integer x0094;
-    /** 0x0095 DWORD GNSS 模块详细定位数据上传参数，上传方式为 0x01 时，单位为秒（s）；上传方式为 0x02 时，单位为米（m）；上传方式为 0xOB 时，单位为秒（s）；上传方式为 0x0C 时，单位为米（m）；上传方式为 0xOD 时，单位为条 */
+    /** 0x0095 DWORD GNSS 模块详细定位数据上传参数，上传方式为 0x01 时，单位为秒（s）；上传方式为 0x02 时，单位为米（m）；上传方式为 0x0B 时，单位为秒（s）；上传方式为 0x0C 时，单位为米（m）；上传方式为 0x0D 时，单位为条 */
     private Long x0095;
 
     /** 0x0100 DWORD CAN 总线通道 1 采集时间间隔，单位为毫秒（ms），0 表示不采集 */
@@ -268,11 +268,11 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
                 .add("x0047=" + (x0047 == null ? "" : x0047))
                 .add("x0048=" + (x0048 == null ? "" : x0048))
                 .add("x0049=" + (x0049 == null ? "" : x0049))
-                .add("x0050=" + (x0050 == null ? "" : x0050))
-                .add("x0051=" + (x0051 == null ? "" : x0051))
-                .add("x0052=" + (x0052 == null ? "" : x0052))
-                .add("x0053=" + (x0053 == null ? "" : x0053))
-                .add("x0054=" + (x0054 == null ? "" : x0054))
+                .add("x0050=" + (x0050 == null ? "" : IntUtil.doubleWordHexString(x0050)))
+                .add("x0051=" + (x0051 == null ? "" : IntUtil.doubleWordHexString(x0051)))
+                .add("x0052=" + (x0052 == null ? "" : IntUtil.doubleWordHexString(x0052)))
+                .add("x0053=" + (x0053 == null ? "" : IntUtil.doubleWordHexString(x0053)))
+                .add("x0054=" + (x0054 == null ? "" : IntUtil.doubleWordHexString(x0054)))
                 .add("x0055=" + (x0055 == null ? "" : x0055))
                 .add("x0056=" + (x0056 == null ? "" : x0056))
                 .add("x0057=" + (x0057 == null ? "" : x0057))
@@ -281,7 +281,7 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
                 .add("x005A=" + (x005A == null ? "" : x005A))
                 .add("x005B=" + (x005B == null ? "" : x005B))
                 .add("x005C=" + (x005C == null ? "" : x005C))
-                .add("x005D=" + (x005D == null ? "" : x005D))
+                .add("x005D=" + (x005D == null ? "" : IntUtil.wordHexString(x005D)))
                 .add("x005E=" + (x005E == null ? "" : x005E))
                 .add("x0064=" + (x0064 == null ? "" : x0064))
                 .add("x0065=" + (x0065 == null ? "" : x0065))
@@ -295,11 +295,11 @@ public class B8103 extends AbstractToStringJoiner implements Codec {
                 .add("x0082=" + (x0082 == null ? "" : x0082))
                 .add("x0083=" + (x0083 == null ? "" : x0083))
                 .add("x0084=" + (x0084 == null ? "" : x0084))
-                .add("x0090=" + (x0090 == null ? "" : x0090))
-                .add("x0091=" + (x0091 == null ? "" : x0091))
-                .add("x0092=" + (x0092 == null ? "" : x0092))
+                .add("x0090=" + (x0090 == null ? "" : IntUtil.byteHexString(x0090)))
+                .add("x0091=" + (x0091 == null ? "" : IntUtil.byteHexString(x0091)))
+                .add("x0092=" + (x0092 == null ? "" : IntUtil.byteHexString(x0092)))
                 .add("x0093=" + (x0093 == null ? "" : x0093))
-                .add("x0094=" + (x0094 == null ? "" : x0094))
+                .add("x0094=" + (x0094 == null ? "" : IntUtil.byteHexString(x0094)))
                 .add("x0095=" + (x0095 == null ? "" : x0095))
                 .add("x0100=" + (x0100 == null ? "" : x0100))
                 .add("x0101=" + (x0101 == null ? "" : x0101))

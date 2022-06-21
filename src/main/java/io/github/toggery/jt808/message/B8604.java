@@ -62,7 +62,7 @@ public class B8604 extends AbstractToStringJoiner implements Codec {
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
                 .add("id=" + id)
-                .add("props=" + props)
+                .add(IntUtil.wordHexString("props=", props))
                 .add("startTime=" + (startTime == null ? "" : startTime))
                 .add("endTime=" + (endTime == null ? "" : endTime))
                 .add("maxSpeed=" + maxSpeed)

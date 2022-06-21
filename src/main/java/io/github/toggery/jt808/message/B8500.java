@@ -51,7 +51,7 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("command=" + command)
+                .add(IntUtil.byteHexString("command=", command))
                 .add("unknownParams=" + (unknownParams == null ? "" : unknownParams))
                 .add("x0001=" + (x0001 == null ? "" : x0001))
         ;

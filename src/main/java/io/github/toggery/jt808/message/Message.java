@@ -383,10 +383,10 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
                 .add("version=" + version)
                 .add("simNo=" + simNo)
                 .add(IntUtil.wordHexString("sn=", sn))
-                ;
+        ;
         if (isLongBody()) {
-            joiner.add("bodyPacketCount=" + bodyPacketCount);
-            joiner.add("bodyPacketNo=" + bodyPacketNo);
+            joiner.add(IntUtil.wordHexString("bodyPacketCount=", bodyPacketCount));
+            joiner.add(IntUtil.wordHexString("bodyPacketNo=", bodyPacketNo));
         }
         if (correlationId != null) {
             joiner.add("correlationId=" + correlationId);
@@ -827,6 +827,8 @@ public final class Message<B extends Codec> extends AbstractToStringJoiner {
 
     /** 数据帧长度最大值：{@code (消息头 + 消息体 + 校验码[1]) * 2(转义预留)} */
     public final static int FRAME_LENGTH_MAX = (HEADER_LENGTH_MAX + BODY_LENGTH_MAX + 1) * 2;
+    /** 数据帧长度最小值：2013 版（version=0）且没有消息体 */
+    public final static int FRAME_LENGTH_MIN = HEADER_LENGTH_MIN_2013;
 
     private final static AttributeKey<Integer> SN_KEY = AttributeKey.newInstance("jt808-message-sn");
     private final static AttributeKey<Message<?>> BODY_PACKETS_KEY = AttributeKey.newInstance("jt808-message-body-packets");

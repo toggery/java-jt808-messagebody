@@ -101,7 +101,7 @@ public class B0705 extends AbstractToStringJoiner implements Codec {
         @Override
         protected void toStringJoiner(StringJoiner joiner) {
             joiner
-                    .add("id=" + id)
+                    .add(IntUtil.doubleWordHexString("id=", id))
                     .add("data=" + (data == null ? "" : ByteBufUtil.hexDump(data)))
             ;
         }

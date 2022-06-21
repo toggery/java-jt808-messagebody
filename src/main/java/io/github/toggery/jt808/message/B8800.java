@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * JT/T 消息体 0x8800 多媒体数据上传应答
@@ -25,7 +26,7 @@ public class B8800 extends AbstractToStringJoiner implements Codec {
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
                 .add("id=" + id)
-                .add("bodyPacketSns=" + bodyPacketSns)
+                .add("bodyPacketSns=" + bodyPacketSns.stream().map(IntUtil::wordHexString).collect(Collectors.toList()))
         ;
     }
 

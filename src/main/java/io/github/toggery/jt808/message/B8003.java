@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * JT/T 消息体 0x8003 服务器补传分包请求
@@ -24,8 +25,8 @@ public class B8003 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("originalSn=" + originalSn)
-                .add("bodyPacketSns=" + bodyPacketSns)
+                .add(IntUtil.wordHexString("originalSn=", originalSn))
+                .add("bodyPacketSns=" + bodyPacketSns.stream().map(IntUtil::wordHexString).collect(Collectors.toList()))
         ;
     }
 

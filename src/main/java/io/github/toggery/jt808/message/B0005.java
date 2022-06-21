@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * JT/T 消息体 0x0005 终端补传分包请求 // 2019 new
@@ -24,8 +25,8 @@ public class B0005 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("originalSn=" + originalSn)
-                .add("bodyPacketSns=" + bodyPacketSns)
+                .add(IntUtil.wordHexString("originalSn=", originalSn))
+                .add("bodyPacketSns=" + bodyPacketSns.stream().map(IntUtil::wordHexString).collect(Collectors.toList()))
         ;
     }
 

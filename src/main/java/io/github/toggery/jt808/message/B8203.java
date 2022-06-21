@@ -34,8 +34,8 @@ public class B8203 extends AbstractToStringJoiner implements Codec {
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
         joiner
-                .add("originalSn=" + originalSn)
-                .add("typeBits=" + typeBits)
+                .add(IntUtil.wordHexString("originalSn=", originalSn))
+                .add(IntUtil.doubleWordHexString("typeBits=", typeBits))
         ;
     }
 
