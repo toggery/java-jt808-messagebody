@@ -439,7 +439,7 @@ class MessageTest {
         b.setReplySn(1);
         b.setReplyId(2);
         b.setResult(B8001.RESULT_UNSUPPORTED);
-        b.setTerminal(new MyTerminalInfo());
+        b.setTerminalInfo(new MyTerminalInfo());
 
         return b;
     }
@@ -874,11 +874,11 @@ class MessageTest {
         b.setX0047(47L);
         b.setX0048("x0048");
         b.setX0049("x0049");
-        b.setX0050(50L);
-        b.setX0051(51L);
-        b.setX0052(52L);
-        b.setX0053(53L);
-        b.setX0054(54L);
+        b.setX0050(0x50L);
+        b.setX0051(0x51L);
+        b.setX0052(0x52L);
+        b.setX0053(0x53L);
+        b.setX0054(0x54L);
         b.setX0055(55L);
         b.setX0056(56L);
         b.setX0057(57L);
@@ -918,10 +918,16 @@ class MessageTest {
         @Override
         protected void toStringJoiner(StringJoiner joiner) {
             joiner
+                    .add("simNo=" + getSimNo())
                     .add("model=" + getModel())
                     .add("group=" + getGroup())
-                    .add(String.format("idleTimeout=%,ds", getIdleTimeout()))
+                    .add(String.format("idleTime=%,ds", getIdleTime()))
             ;
+        }
+
+        @Override
+        public String getSimNo() {
+            return "18912345678";
         }
 
         @Override
@@ -935,7 +941,7 @@ class MessageTest {
         }
 
         @Override
-        public int getIdleTimeout() {
+        public int getIdleTime() {
             return 3600;
         }
     }

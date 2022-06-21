@@ -8,6 +8,13 @@ package io.github.toggery.jt808.message;
 public interface TerminalInfo {
 
     /**
+     * 获取终端手机号
+     *
+     * @return 终端手机号
+     */
+    String getSimNo();
+
+    /**
      * 获取终端型号
      *
      * @return 终端型号
@@ -22,10 +29,10 @@ public interface TerminalInfo {
     String getGroup();
 
     /**
-     * 获取终端保持连接的空闲超时时间，单位为秒
+     * 获取终端保持连接的空闲时间，单位为秒
      *
-     * @return 终端保持连接的空闲超时时间，单位为秒，超过此时间后将会强制关闭连接
+     * @return 终端保持连接的空闲时间，单位为秒，超过此时间后将会强制关闭连接
      */
-    int getIdleTimeout();
+    int getIdleTime();
 
 }
