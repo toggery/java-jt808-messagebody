@@ -5,11 +5,7 @@ import io.netty.buffer.ByteBufUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * JT/T 消息体 0x8500 车辆控制 // 2019 modify
@@ -64,12 +60,7 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
      * @param fieldEncoder 控制参数编码方法
      */
     protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder) {
-        Params.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, this));
-    }
-
-    /** 清除控制参数 */
-    protected void clearParams() {
-        Params.CODECS.values().forEach(f -> f.clear(this));
+        PARAMS.values().forEach(f -> f.encode(version, fieldEncoder, this));
     }
 
     /**
@@ -80,7 +71,7 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
      * @return 是否成功
      */
     protected boolean decodeParam(int id, int version, ByteBuf buf) {
-        final FieldCodec<Integer, B8500, ?> param = Params.CODECS.get(id);
+        final FieldCodec<Integer, B8500, ?> param = PARAMS.get(id);
         if (param != null) {
             param.decode(version, buf, this);
             return true;
@@ -106,7 +97,6 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
     public void decode(int version, ByteBuf buf) {
         command = 0;
         unknownParams = null;
-        clearParams();
 
         if (version > 0) {
             int cnt = Codec.readWord(buf);
@@ -181,15 +171,15 @@ public class B8500 extends AbstractToStringJoiner implements Codec {
         unknownParams.put(IntUtil.wordHexString(id), ByteBufUtil.hexDump(buf));
     }
 
-    private final static class Params {
+    private static final Map<Integer, FieldCodec<Integer, B8500, ?>> PARAMS = new LinkedHashMap<>();
 
-        private final static Map<Integer, FieldCodec<Integer, B8500, ?>> CODECS = new LinkedHashMap<>();
+    private static <V> void register(FieldCodec<Integer, B8500, V> fieldCodec) {
+        PARAMS.put(fieldCodec.getId(), fieldCodec);
+    }
 
-        static {
-            // 0x0001 车门 BYTE 0.车门锁闭 1.车门开启
-            CODECS.put(0x0001, new FieldCodec<>(0x0001, B8500::getX0001, B8500::setX0001, ver -> Codec::writeByte, ver -> Codec::readByte));
-         }
-
+    static {
+        // 0x0001 车门 BYTE 0.车门锁闭 1.车门开启
+        register(FieldCodec.ofByte(0x0001, B8500::getX0001, B8500::setX0001));
     }
 
 }

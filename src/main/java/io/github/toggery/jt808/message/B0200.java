@@ -5,11 +5,7 @@ import io.netty.buffer.ByteBufUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * JT/T 消息体 0x0200 位置信息汇报 // 2019 modify
@@ -138,13 +134,8 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
      * @param version 版本号
      * @param fieldEncoder 附加信息编码方法
      */
-    protected void encodeParams(int version, CountedFieldEncoder<Integer> fieldEncoder) {
-        Extras.CODECS.values().forEach(f -> f.encode(version, fieldEncoder, this));
-    }
-
-    /** 清除附加信息 */
-    protected void clearParams() {
-        Extras.CODECS.values().forEach(f -> f.clear(this));
+    protected void encodeExtras(int version, CountedFieldEncoder<Integer> fieldEncoder) {
+        EXTRAS.values().forEach(f -> f.encode(version, fieldEncoder, this));
     }
 
     /**
@@ -154,10 +145,10 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
      * @param buf 字节缓冲区
      * @return 是否成功
      */
-    protected boolean decodeParam(int id, int version, ByteBuf buf) {
-        final FieldCodec<Integer, B0200, ?> param = Extras.CODECS.get(id);
-        if (param != null) {
-            param.decode(version, buf, this);
+    protected boolean decodeExtra(int id, int version, ByteBuf buf) {
+        final FieldCodec<Integer, B0200, ?> extra = EXTRAS.get(id);
+        if (extra != null) {
+            extra.decode(version, buf, this);
             return true;
         }
         return false;
@@ -178,7 +169,7 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
 
         final CountedFieldEncoder<Integer> encoder =
                 new CountedLengthHeadedFieldEncoder<>(buf, Codec::writeByte, IntUnit.BYTE);
-        encodeParams(version, encoder);
+        encodeExtras(version, encoder);
     }
 
     @Override
@@ -194,12 +185,11 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
 
         if (excludeExtras) return;
         unknownExtras = null;
-        clearParams();
 
         while (buf.isReadable()) {
             final int id = Codec.readByte(buf);
             final ByteBuf fieldBuf = Codec.readSlice(buf, IntUnit.BYTE);
-            if (!decodeParam(id, version, fieldBuf)) {
+            if (!decodeExtra(id, version, fieldBuf)) {
                 putUnknownExtra(id, fieldBuf);
             }
         }
@@ -598,72 +588,53 @@ public class B0200 extends AbstractToStringJoiner implements Codec {
         unknownExtras.put(IntUtil.byteHexString(id), ByteBufUtil.hexDump(buf));
     }
 
-    private final static class Extras {
+    private static final Map<Integer, FieldCodec<Integer, B0200, ?>> EXTRAS = new LinkedHashMap<>();
 
-        private final static Map<Integer, FieldCodec<Integer, B0200, ?>> CODECS = new LinkedHashMap<>();
+    private static <V> void register(FieldCodec<Integer, B0200, V> fieldCodec) {
+        EXTRAS.put(fieldCodec.getId(), fieldCodec);
+    }
 
-        static {
+    static {
 
-            // 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数
-            register(0x01, B0200::getX01, B0200::setX01, ver -> Codec::writeDoubleWord, ver -> Codec::readDoubleWord);
-            // 0x02 WORD 油量，单位为 0.1L，对应车上油量表读数
-            register(0x02, B0200::getX02, B0200::setX02, ver -> Codec::writeWord, ver -> Codec::readWord);
-            // 0x03 WORD 行驶记录功能获取的速度，0.1km/h
-            register(0x03, B0200::getX03, B0200::setX03, ver -> Codec::writeWord, ver -> Codec::readWord);
-            // 0x04 WORD 需要人工确认报警事件的 ID，从 1 开始计数
-            register(0x04, B0200::getX04, B0200::setX04, ver -> Codec::writeWord, ver -> Codec::readWord);
+        // 0x01 DWORD 里程，单位为 0.1km，对应车上里程表读数
+        register(FieldCodec.ofDoubleWord(0x01, B0200::getX01, B0200::setX01));
+        // 0x02 WORD 油量，单位为 0.1L，对应车上油量表读数
+        register(FieldCodec.ofWord(0x02, B0200::getX02, B0200::setX02));
+        // 0x03 WORD 行驶记录功能获取的速度，0.1km/h
+        register(FieldCodec.ofWord(0x03, B0200::getX03, B0200::setX03));
+        // 0x04 WORD 需要人工确认报警事件的 ID，从 1 开始计数
+        register(FieldCodec.ofWord(0x04, B0200::getX04, B0200::setX04));
 
-            // 0x05 BYTE[30] 胎压，单位为 Pa，标定轮子的顺序为从车头开始从左到右顺序排列，定长 30 字节，多余的字节为 0xFF，表示无效数据 // 2019 new
-            register(0x05, B0200::getX05, B0200::setX05,
-                    ver -> ver > 0 ? (b, v) -> Codec.writeBytes(b, v, -30, PadChar.NUL) : null,
-                    ver -> ver > 0 ? b -> Codec.readBytes(b, 30, PadChar.NUL) : null
-            );
-            // 0x06 SHORT 车厢温度，单位为摄氏度，取值范围为 -32767 ~ 32767，最高位为 1 表示负数 // 2019 new
-            register(0x06, B0200::getX06, B0200::setX06,
-                    ver -> ver > 0 ? Codec::writeShort : null,
-                    ver -> ver > 0 ? Codec::readShort : null
-            );
+        // 0x05 BYTE[30] 胎压，单位为 Pa，标定轮子的顺序为从车头开始从左到右顺序排列，定长 30 字节，多余的字节为 0xFF，表示无效数据 // 2019 new
+        register(FieldCodec.of(0x05, B0200::getX05, B0200::setX05,
+                ver -> ver > 0 ? (b, v) -> Codec.writeBytes(b, v, -30, PadChar.NUL) : null,
+                ver -> ver > 0 ? b -> Codec.readBytes(b, 30, PadChar.NUL) : null
+        ));
+        // 0x06 SHORT 车厢温度，单位为摄氏度，取值范围为 -32767 ~ 32767，最高位为 1 表示负数 // 2019 new
+        register(FieldCodec.of(0x06, B0200::getX06, B0200::setX06,
+                ver -> ver > 0 ? Codec::writeShort : null,
+                ver -> ver > 0 ? Codec::readShort : null
+        ));
 
-            // 0x11 OBJECT 超速报警附加信息见表 28
-            register(0x11, B0200::getX11, B0200::setX11, B0200_11::new);
-            // 0x12 OBJECT 进出区域/路线报警附加信息见表 29
-            register(0x12, B0200::getX12, B0200::setX12, B0200_12::new);
-            // 0x13 OBJECT 路段行驶时间不足/过长报警附加信息见表 30
-            register(0x13, B0200::getX13, B0200::setX13, B0200_13::new);
+        // 0x11 OBJECT 超速报警附加信息见表 28
+        register(FieldCodec.of(0x11, B0200::getX11, B0200::setX11, B0200_11::new));
+        // 0x12 OBJECT 进出区域/路线报警附加信息见表 29
+        register(FieldCodec.of(0x12, B0200::getX12, B0200::setX12, B0200_12::new));
+        // 0x13 OBJECT 路段行驶时间不足/过长报警附加信息见表 30
+        register(FieldCodec.of(0x13, B0200::getX13, B0200::setX13, B0200_13::new));
 
-            // 0x25 DWORD 扩展车辆信号状态位，参数项格式和定义见表 31
-            register(0x25, B0200::getX25, B0200::setX25, ver -> Codec::writeDoubleWord, ver -> Codec::readDoubleWord);
+        // 0x25 DWORD 扩展车辆信号状态位，参数项格式和定义见表 31
+        register(FieldCodec.ofDoubleWord(0x25, B0200::getX25, B0200::setX25));
 
-            // 0x2A WORD I0 状态位，参数项格式和定义见表 32
-            register(0x2A, B0200::getX2A, B0200::setX2A, ver -> Codec::writeWord, ver -> Codec::readWord);
-            // 0x2B DWORD 模拟量，bit[0~15]，AD0;bit[l6~31]，AD1
-            register(0x2B, B0200::getX2B, B0200::setX2B, ver -> Codec::writeDoubleWord, ver -> Codec::readDoubleWord);
+        // 0x2A WORD I0 状态位，参数项格式和定义见表 32
+        register(FieldCodec.ofWord(0x2A, B0200::getX2A, B0200::setX2A));
+        // 0x2B DWORD 模拟量，bit[0~15]，AD0;bit[l6~31]，AD1
+        register(FieldCodec.ofDoubleWord(0x2B, B0200::getX2B, B0200::setX2B));
 
-            // 0x30 BYTE 无线通信网络信号强度
-            register(0x30, B0200::getX30, B0200::setX30, ver -> Codec::writeByte, ver -> Codec::readByte);
-            // 0x31 BYTE GNSS定位卫星数
-            register(0x31, B0200::getX31, B0200::setX31, ver -> Codec::writeByte, ver -> Codec::readByte);
-
-        }
-
-        private static <V> void register(int id, Function<B0200, V> getter, BiConsumer<B0200, V> setter,
-                                         Function<Integer, BiConsumer<ByteBuf, V>> encoderSupplier,
-                                         Function<Integer, Function<ByteBuf, V>> decoderSupplier) {
-            CODECS.put(id, new FieldCodec<>(id, getter, setter, encoderSupplier, decoderSupplier));
-        }
-
-        private static <V extends Codec> void register(int id,
-                                                       Function<B0200, V> getter, BiConsumer<B0200, V> setter,
-                                                       Supplier<V> valueCreator) {
-            Objects.requireNonNull(valueCreator);
-            final Function<Integer, BiConsumer<ByteBuf, V>> encoderSupplier = ver -> (b, v) -> v.encode(ver, b);
-            final Function<Integer, Function<ByteBuf, V>> decoderSupplier = ver -> b -> {
-                final V v = valueCreator.get();
-                v.decode(ver, b);
-                return v;
-            };
-            CODECS.put(id, new FieldCodec<>(id, getter, setter, encoderSupplier, decoderSupplier));
-        }
+        // 0x30 BYTE 无线通信网络信号强度
+        register(FieldCodec.ofByte(0x30, B0200::getX30, B0200::setX30));
+        // 0x31 BYTE GNSS定位卫星数
+        register(FieldCodec.ofByte(0x31, B0200::getX31, B0200::setX31));
 
     }
 
