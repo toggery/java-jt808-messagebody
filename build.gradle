@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.toggery'
-version = '2.0.0'
+version = '1.0.2'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -14,13 +14,10 @@ repositories {
 }
 
 ext {
-	nettyVersion = '4.1.78.Final'
 	jupiterVersion = '5.8.2'
 }
 
 dependencies {
-	implementation "io.netty:netty-buffer:${nettyVersion}"
-
 	testImplementation "org.junit.jupiter:junit-jupiter:${jupiterVersion}"
 }
 
@@ -55,12 +52,17 @@ javadoc {
 publishing {
 	publications {
 		MyLibrary(MavenPublication) {
-			artifactId = 'jt808-message'
+			artifactId = 'jt808-messagebody'
 			from components.java
 			pom {
-				name = 'JT/T 808 Message'
-				description = 'JT/T 808 消息定义及编码解码'
-				url = 'https://github.com/toggery/java-jt808-message'
+				name = 'JT/T 808 Message Body'
+				description = 'Java 语言实现的 JT/T 808 消息体定义'
+				url = 'https://github.com/toggery/java-jt808-messagebody'
+				scm {
+					connection = 'scm:git:git://github.com/toggery/java-jt808-messagebody.git'
+					developerConnection = 'scm:git:ssh://github.com/toggery/java-jt808-messagebody.git'
+					url = 'https://github.com/toggery/java-jt808-messagebody'
+				}
 				licenses {
 					license {
 						name = 'The MIT License'
@@ -73,11 +75,6 @@ publishing {
 						name = 'Togger Jiang'
 						email = 'togger@qq.com'
 					}
-				}
-				scm {
-					connection = 'scm:git:git://github.com/toggery/java-jt808-message.git'
-					developerConnection = 'scm:git:ssh://github.com/toggery/java-jt808-message.git'
-					url = 'https://github.com/toggery/java-jt808-message'
 				}
 			}
 		}
