@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8602 设置矩形区域 // 2019 modify
+ * JT/T 消息体：0x8602 设置矩形区域 // 2019 modify
  *
  * @author togger
  */
@@ -85,7 +85,7 @@ public class B8602 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x8602 矩形区域
+     * JT/T 消息体：0x8602 矩形区域
      *
      * @author togger
      */

@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8801 摄像头立即拍摄命令 // 2019 modify
+ * JT/T 消息体：0x8801 摄像头立即拍摄命令 // 2019 modify
  *
  * @author togger
  */
@@ -309,6 +309,7 @@ public class B8801 extends AbstractToStringJoiner {
     public void setChroma(int chroma) {
         this.chroma = chroma;
     }
+
 
     /** 拍摄命令：停止拍摄 */
     public static final int COMMAND_STOP_SHOOT = 0;

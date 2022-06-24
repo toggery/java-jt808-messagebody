@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 位置扩展信息 0x11 超速报警附加信息，见表 28
+ * JT/T 消息体：0x0200 位置信息汇报 附加信息 0x11 超速报警附加信息，见表 28
  *
  * @author togger
  */
@@ -88,6 +88,15 @@ public class B0200X11 extends AbstractToStringJoiner {
      */
     public void setId(long id) {
         this.id = id;
+    }
+
+
+    /**
+     * 获取是否为无特定位置
+     * @return 是否为无特定位置
+     */
+    public boolean isNone() {
+        return type == TYPE_NONE;
     }
 
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8401 设置电话本
+ * JT/T 消息体：0x8401 设置电话本
  *
  * @author togger
  */
@@ -80,6 +80,7 @@ public class B8401 extends AbstractToStringJoiner {
         return contacts;
     }
 
+
     /** 类型：删除终端上所有存储的联系人（该命令后不带后继字节？） */
     public static final int TYPE_DELETE_ALL = 0;
     /** 类型：更新电话本（删除终端中已有全部联系人并追加消息中的联系人） */
@@ -91,7 +92,7 @@ public class B8401 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x8401 联系人
+     * JT/T 消息体：0x8401 联系人
      *
      * @author togger
      */

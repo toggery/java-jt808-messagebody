@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
- * JT/T 消息体 0x8800 多媒体数据上传应答
+ * JT/T 消息体：0x8800 多媒体数据上传应答
  *
  * @author togger
  */

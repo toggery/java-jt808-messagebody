@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 位置扩展信息 0x13 路段行驶时间不足/过长报警附加信息，见表 30
+ * JT/T 消息体：0x0200 位置信息汇报 附加信息 0x13 路段行驶时间不足/过长报警附加信息，见表 30
  *
  * @author togger
  */

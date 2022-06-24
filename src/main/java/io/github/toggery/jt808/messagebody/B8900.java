@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8900 数据下行透传
+ * JT/T 消息体：0x8900 数据下行透传
  *
  * @author togger
  */

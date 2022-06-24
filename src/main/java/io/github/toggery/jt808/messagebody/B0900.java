@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0900 数据上行透传
+ * JT/T 消息体：0x0900 数据上行透传
  *
  * @author togger
  */
@@ -88,6 +88,7 @@ public class B0900 extends AbstractToStringJoiner {
     public void setData(byte[] data) {
         this.data = data;
     }
+
 
     /** 透传消息类型：GNSS 模块详细定位数据 */
     public static final int TYPE_GNSS_DATA = 0x00;

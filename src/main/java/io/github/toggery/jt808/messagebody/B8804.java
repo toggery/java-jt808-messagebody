@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8804 录音开始命令
+ * JT/T 消息体：0x8804 录音开始命令
  *
  * @author togger
  */
@@ -163,6 +163,7 @@ public class B8804 extends AbstractToStringJoiner {
     public void setSampling(int sampling) {
         this.sampling = sampling;
     }
+
 
     /** 录音命令：停止录音 */
     public static final int COMMAND_STOP = 0;

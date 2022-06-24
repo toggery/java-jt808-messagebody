@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8608 查询区域或线路数据 元素类型为 DWORD // 2019 new
+ * JT/T 消息体：0x8608 查询区域或线路数据 元素类型为 DWORD // 2019 new
  *
  * @author togger
  */
@@ -78,6 +78,7 @@ public class B8608 extends AbstractToStringJoiner {
     public List<Long> getIds() {
         return ids;
     }
+
 
     /** 类型：圆形区域 */
     public static final int TYPE_CIRCLE = 1;

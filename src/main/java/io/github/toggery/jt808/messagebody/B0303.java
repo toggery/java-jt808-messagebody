@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0303 信息点播/取消 // 2019 del
+ * JT/T 消息体：0x0303 信息点播/取消 // 2019 del
  *
  * @author togger
  */
@@ -73,6 +73,23 @@ public class B0303 extends AbstractToStringJoiner {
      */
     public void setAction(int action) {
         this.action = action;
+    }
+
+
+    /**
+     * 获取是否取消
+     * @return 是否取消
+     */
+    public boolean isCancelled() {
+        return action == ACTION_CANCEL;
+    }
+
+    /**
+     * 获取是否点播
+     * @return 是否点播
+     */
+    public boolean isDamanded() {
+        return action == ACTION_DEMAND;
     }
 
 

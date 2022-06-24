@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8108 下发终端升级包
+ * JT/T 消息体：0x8108 下发终端升级包
  *
  * @author togger
  */
@@ -119,6 +119,7 @@ public class B8108 extends AbstractToStringJoiner {
     public void setData(byte[] data) {
         this.data = data;
     }
+
 
     /** 升级类型：终端 */
     public static final int TYPE_TERMINAL = 0;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0705 CAN 总线数据上传 // 2019 modify
+ * JT/T 消息体：0x0705 CAN 总线数据上传 // 2019 modify
  *
  * @author togger
  */
@@ -53,7 +53,7 @@ public class B0705 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x0705 CAN 总线
+     * JT/T 消息体：0x0705 CAN 总线
      *
      * @author togger
      */

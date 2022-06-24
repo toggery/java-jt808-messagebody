@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0702 驾驶员身份信息采集上报 // 2019 modify
+ * JT/T 消息体：0x0702 驾驶员身份信息采集上报 // 2019 modify
  *
  * @author togger
  */

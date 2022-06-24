@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0200 位置信息汇报 // 2019 modify
+ * JT/T 消息体：0x0200 位置信息汇报 // 2019 modify
  *
  * @author togger
  */

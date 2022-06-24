@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8103 设置终端参数 // 2019 modify
+ * JT/T 消息体：0x8103 设置终端参数 // 2019 modify
  *
  * <br><br>
  * <ul>

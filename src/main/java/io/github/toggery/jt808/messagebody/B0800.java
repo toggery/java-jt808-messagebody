@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0800 多媒体事件信息上传
+ * JT/T 消息体：0x0800 多媒体事件信息上传
  *
  * @author togger
  */
@@ -226,6 +226,7 @@ public class B0800 extends AbstractToStringJoiner {
     public void setChannel(int channel) {
         this.channel = channel;
     }
+
 
     /** 多媒体类型：图像 */
     public static final int TYPE_IMAGE = 0;

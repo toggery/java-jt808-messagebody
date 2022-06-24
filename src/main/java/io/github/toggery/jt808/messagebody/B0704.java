@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0704 定位数据批量上传
+ * JT/T 消息体：0x0704 定位数据批量上传
  *
  * @author togger
  */
@@ -67,6 +67,23 @@ public class B0704 extends AbstractToStringJoiner {
      */
     public List<B0200> getLocations() {
         return locations;
+    }
+
+
+    /**
+     * 获取是否为批量汇报
+     * @return 是否为批量汇报
+     */
+    public boolean isBatch() {
+        return type == TYPE_BATCH;
+    }
+
+    /**
+     * 获取是否为补报
+     * @return 是否为补报
+     */
+    public boolean isPost() {
+        return type == TYPE_POST;
     }
 
 

@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8100 终端注册应答
+ * JT/T 消息体：0x8100 终端注册应答
  *
  * @author togger
  */
@@ -116,6 +116,7 @@ public class B8100 extends AbstractToStringJoiner {
     public final boolean isSuccessful() {
         return result == RESULT_SUCCESSFUL;
     }
+
 
     /** 结果：成功 */
     public static final int RESULT_SUCCESSFUL = 0;

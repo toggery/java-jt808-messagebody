@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0801 多媒体数据上传（位置信息汇报的信息基本数据） // 2019 modify
+ * JT/T 消息体：0x0801 多媒体数据上传（位置信息汇报的信息基本数据） // 2019 modify
  *
  * @author togger
  */

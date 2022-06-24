@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8400 电话回拨
+ * JT/T 消息体：0x8400 电话回拨
  *
  * @author togger
  */
@@ -74,6 +74,24 @@ public class B8400 extends AbstractToStringJoiner {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+
+    /**
+     * 获取是否为普通通话
+     * @return 是否为普通通话
+     */
+    public boolean isCommon() {
+        return type == TYPE_COMMON;
+    }
+
+    /**
+     * 获取是否为监听
+     * @return 是否为监听
+     */
+    public boolean isListening() {
+        return type == TYPE_LISTENING;
+    }
+
 
     /** 标志：普通通话 */
     public static final int TYPE_COMMON = 0;

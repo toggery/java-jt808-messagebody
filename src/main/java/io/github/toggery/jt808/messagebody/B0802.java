@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0802 存储多媒体数据检索应答
+ * JT/T 消息体：0x0802 存储多媒体数据检索应答
  *
  * @author togger
  */
@@ -53,7 +53,7 @@ public class B0802 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x0802 存储多媒体数据检索应答的多媒体数据（位置信息汇报的信息基本数据）
+     * JT/T 消息体：0x0802 存储多媒体数据检索应答的多媒体数据（位置信息汇报的信息基本数据）
      *
      * @author togger
      */

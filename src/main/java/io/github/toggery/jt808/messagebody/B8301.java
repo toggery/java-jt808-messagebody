@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8301 事件设置 // 2019 del
+ * JT/T 消息体：0x8301 事件设置 // 2019 del
  *
  * @author togger
  */
@@ -85,6 +85,14 @@ public class B8301 extends AbstractToStringJoiner {
         return events;
     }
 
+    /**
+     * 获取是否删除所有事件
+     * @return 是否删除所有事件
+     */
+    public boolean isDeleteAll() {
+        return type == TYPE_DELETE_ALL;
+    }
+
 
     /** 类型：删除终端现有所有事件，该命令后不带后继字节 */
     public static final int TYPE_DELETE_ALL = 0;
@@ -99,7 +107,7 @@ public class B8301 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x8301 事件
+     * JT/T 消息体：0x8301 事件
      *
      * @author togger
      */

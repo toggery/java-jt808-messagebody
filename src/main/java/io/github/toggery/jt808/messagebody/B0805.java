@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0805 摄像头立即拍摄命令应答
+ * JT/T 消息体：0x0805 摄像头立即拍摄命令应答
  *
  * @author togger
  */
@@ -103,6 +103,7 @@ public class B0805 extends AbstractToStringJoiner {
     public final boolean isSuccessful() {
         return result == RESULT_SUCCESSFUL;
     }
+
 
     /** 结果：成功 */
     public static final int RESULT_SUCCESSFUL = 0;

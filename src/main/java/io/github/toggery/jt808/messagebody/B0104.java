@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0104 查询终端参数应答
+ * JT/T 消息体：0x0104 查询终端参数应答
  *
  * @author togger
  */

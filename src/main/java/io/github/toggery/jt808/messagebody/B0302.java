@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0302 提问应答 // 2019 del
+ * JT/T 消息体：0x0302 提问应答 // 2019 del
  *
  * @author togger
  */

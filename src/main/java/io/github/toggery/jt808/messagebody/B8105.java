@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8105 终端控制
+ * JT/T 消息体：0x8105 终端控制
  *
  * @author togger
  */
@@ -99,6 +99,7 @@ public class B8105 extends AbstractToStringJoiner {
     public void setParam(String param) {
         this.param = param;
     }
+
 
     /** 命令字：无线升级 */
     public static final int COMMAND_WIRELESS_FIRMWARE_UPGRAGE = 1;

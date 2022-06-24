@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
- * JT/T 消息体 0x8003 服务器补传分包请求
+ * JT/T 消息体：0x8003 服务器补传分包请求
  *
  * @author togger
  */

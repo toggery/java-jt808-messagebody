@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 位置扩展信息 0x12 进出区域/路线报警附加信息，见表 29
+ * JT/T 消息体：0x0200 位置信息汇报 附加信息 0x12 进出区域/路线报警附加信息，见表 29
  *
  * @author togger
  */
@@ -121,6 +121,23 @@ public class B0200X12 extends AbstractToStringJoiner {
      */
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+
+
+    /**
+     * 获取是否进方向
+     * @return 是否进方向
+     */
+    public boolean isIn() {
+        return direction == DIRECTION_IN;
+    }
+
+    /**
+     * 获取是否外出方向
+     * @return 是否出方向
+     */
+    public boolean isOut() {
+        return direction == DIRECTION_OUT;
     }
 
 

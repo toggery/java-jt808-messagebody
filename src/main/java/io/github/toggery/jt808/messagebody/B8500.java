@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8500 车辆控制 // 2019 modify
+ * JT/T 消息体：0x8500 车辆控制 // 2019 modify
  *
  * 注意：
  * <ul>

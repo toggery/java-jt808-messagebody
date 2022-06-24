@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8302 提问下发 // 2019 del
+ * JT/T 消息体：0x8302 提问下发 // 2019 del
+ *
  * @author togger
  */
 public class B8302 extends AbstractToStringJoiner {
@@ -93,7 +94,7 @@ public class B8302 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x8302 候选答案
+     * JT/T 消息体：0x8302 候选答案
      *
      * @author togger
      */

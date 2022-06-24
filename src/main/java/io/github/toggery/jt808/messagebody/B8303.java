@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8303 信息点播菜单设置 // 2019 del
+ * JT/T 消息体：0x8303 信息点播菜单设置 // 2019 del
  *
  * @author togger
  */
@@ -35,15 +35,6 @@ public class B8303 extends AbstractToStringJoiner {
         ;
     }
 
-
-    /** 类型：删除终端全部信息项（该命令后不带后继字节？） */
-    public static final int TYPE_DELETE_ALL = 0;
-    /** 类型：更新菜单 */
-    public static final int TYPE_UPDATE = 1;
-    /** 类型：追加菜单 */
-    public static final int TYPE_APPEND = 2;
-    /** 类型：修改菜单 */
-    public static final int TYPE_MODIFY = 3;
 
     /**
      * 获取类型
@@ -90,8 +81,18 @@ public class B8303 extends AbstractToStringJoiner {
     }
 
 
+    /** 类型：删除终端全部信息项（该命令后不带后继字节？） */
+    public static final int TYPE_DELETE_ALL = 0;
+    /** 类型：更新菜单 */
+    public static final int TYPE_UPDATE = 1;
+    /** 类型：追加菜单 */
+    public static final int TYPE_APPEND = 2;
+    /** 类型：修改菜单 */
+    public static final int TYPE_MODIFY = 3;
+
+
     /**
-     * JT/T 消息体 0x8303 信息项
+     * JT/T 消息体：0x8303 信息项
      *
      * @author togger
      */

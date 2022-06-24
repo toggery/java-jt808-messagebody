@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x0608 查询区域或线路数据应答 // 2019 new
+ * JT/T 消息体：0x0608 查询区域或线路数据应答 // 2019 new
  *<br><br>
  * ？？？矛盾：协议中集合元素类型为 DWORD，而描述则是区域或路线消息体数据格式 ？？？
  *
@@ -116,6 +116,7 @@ public class B0608 extends AbstractToStringJoiner {
     public List<B8606> getRoutes() {
         return routes;
     }
+
 
     /** 类型：圆形区域 */
     public static final int TYPE_CIRCLE = 1;

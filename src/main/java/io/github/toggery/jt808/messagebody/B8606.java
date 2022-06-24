@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8606 设置路线 // 2019 modify
+ * JT/T 消息体：0x8606 设置路线 // 2019 modify
  * @author togger
  */
 public class B8606 extends AbstractToStringJoiner {
@@ -162,7 +162,7 @@ public class B8606 extends AbstractToStringJoiner {
 
 
     /**
-     * JT/T 消息体 0x8606 路线拐点
+     * JT/T 消息体：0x8606 路线拐点
      *
      * @author togger
      */

@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8300 文本信息下发 // 2019 modify
+ * JT/T 消息体：0x8300 文本信息下发 // 2019 modify
  *
  * @author togger
  */
@@ -121,6 +121,24 @@ public class B8300 extends AbstractToStringJoiner {
     public void setContent(String content) {
         this.content = content;
     }
+
+
+    /**
+     * 获取是否为通知
+     * @return 是否为通知
+     */
+    public boolean isNotification() {
+        return type == TYPE_NOTIFICATION;
+    }
+
+    /**
+     * 获取是否为服务
+     * @return 是否为服务
+     */
+    public boolean isService() {
+        return type == TYPE_SERVICE;
+    }
+
 
     /** 类型：通知 */
     public static final int TYPE_NOTIFICATION = 1;

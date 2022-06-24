@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8802 存储多媒体数据检索
+ * JT/T 消息体：0x8802 存储多媒体数据检索
  *
  * <p>注：不按时间范围则将起始时间/结束时间都设为000000000000。</p>
  *
@@ -172,6 +172,7 @@ public class B8802 extends AbstractToStringJoiner {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
 
     /** 多媒体类型：图像 */
     public static final int TYPE_IMAGE = 0;

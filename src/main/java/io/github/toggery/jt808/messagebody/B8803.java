@@ -3,7 +3,7 @@ package io.github.toggery.jt808.messagebody;
 import java.util.StringJoiner;
 
 /**
- * JT/T 消息体 0x8803 存储多媒体数据上传
+ * JT/T 消息体：0x8803 存储多媒体数据上传
  *
  * @author togger
  */
@@ -162,6 +162,15 @@ public class B8803 extends AbstractToStringJoiner {
      */
     public void setDeleted(int deleted) {
         this.deleted = deleted;
+    }
+
+
+    /**
+     * 获取是否为删除
+     * @return 是否为删除
+     */
+    public boolean isDeleted() {
+        return deleted == DELETED_DELETE;
     }
 
 
