@@ -97,13 +97,6 @@ public class B0805 extends AbstractToStringJoiner {
         return mediaIds;
     }
 
-    /**
-     * @return 是否成功
-     */
-    public final boolean isSuccessful() {
-        return result == RESULT_SUCCESSFUL;
-    }
-
 
     /** 结果：成功 */
     public static final int RESULT_SUCCESSFUL = 0;
