@@ -105,13 +105,6 @@ public class B0001 extends AbstractToStringJoiner {
         this.result = result;
     }
 
-    /**
-     * 获取是否成功
-     * @return 是否成功
-     */
-    public final boolean isSuccessful() {
-        return result == RESULT_SUCCESSFUL;
-    }
 
     /** 结果：成功、确认 */
     public static final int RESULT_SUCCESSFUL = 0;

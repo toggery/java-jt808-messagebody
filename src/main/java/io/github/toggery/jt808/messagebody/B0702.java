@@ -233,14 +233,6 @@ public class B0702 extends AbstractToStringJoiner {
         this.idCardNo = idCardNo;
     }
 
-    /**
-     * 获取是否成功
-     * @return 是否成功
-     */
-    public final boolean isSuccessful() {
-        return result == RESULT_SUCCESSFUL;
-    }
-
 
     /** 状态：从业资格证 IC 卡插入（驾驶员上班） */
     public static final int STATUS_IC_CARD_INSERTED = 0x01;

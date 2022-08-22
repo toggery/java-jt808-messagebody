@@ -27,9 +27,6 @@ public class B8001 extends AbstractToStringJoiner {
      */
     private int result;
 
-    /** 终端信息，不参与编码解码 */
-    private TerminalInfo terminalInfo;
-
 
     @Override
     protected void toStringJoiner(StringJoiner joiner) {
@@ -37,7 +34,6 @@ public class B8001 extends AbstractToStringJoiner {
                 .add(HexUtil.wordString("replySn=", replySn))
                 .add(HexUtil.wordString("replyId=", replyId))
                 .add("result=" + result)
-                .add("terminalInfo=" + (terminalInfo == null ? "" : terminalInfo))
         ;
     }
 
@@ -114,29 +110,6 @@ public class B8001 extends AbstractToStringJoiner {
         this.result = result;
     }
 
-    /**
-     * 获取终端信息，不参与编码解码
-     * @return 终端信息，不参与编码解码
-     */
-    public TerminalInfo getTerminalInfo() {
-        return terminalInfo;
-    }
-
-    /**
-     * 设置终端信息，不参与编码解码
-     * @param terminalInfo 终端信息，不参与编码解码
-     */
-    public void setTerminalInfo(TerminalInfo terminalInfo) {
-        this.terminalInfo = terminalInfo;
-    }
-
-    /**
-     * 获取是否成功
-     * @return 是否成功
-     */
-    public final boolean isSuccessful() {
-        return result == RESULT_SUCCESSFUL;
-    }
 
     /** 结果：成功、确认 */
     public static final int RESULT_SUCCESSFUL = 0;

@@ -87,14 +87,6 @@ public class B0108 extends AbstractToStringJoiner {
         this.result = result;
     }
 
-    /**
-     * 获取是否成功
-     * @return 是否成功
-     */
-    public final boolean isSuccessful() {
-        return result == RESULT_SUCCESSFUL;
-    }
-
 
     /** 升级结果：成功 */
     public static final int RESULT_SUCCESSFUL = 0;

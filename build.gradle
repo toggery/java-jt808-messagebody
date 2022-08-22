@@ -5,25 +5,9 @@ plugins {
 }
 
 group = 'io.github.toggery'
-version = '2.0.0'
+version = '2.0.1'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-repositories {
-	mavenCentral()
-}
-
-ext {
-	jupiterVersion = '5.8.2'
-}
-
-dependencies {
-	testImplementation "org.junit.jupiter:junit-jupiter:${jupiterVersion}"
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
 
 compileJava {
 	options.compilerArgs << '-Xlint:deprecation'

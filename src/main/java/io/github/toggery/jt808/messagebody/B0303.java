@@ -76,23 +76,6 @@ public class B0303 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否取消
-     * @return 是否取消
-     */
-    public boolean isCancelled() {
-        return action == ACTION_CANCEL;
-    }
-
-    /**
-     * 获取是否点播
-     * @return 是否点播
-     */
-    public boolean isDamanded() {
-        return action == ACTION_DEMAND;
-    }
-
-
     /** 点播/取消标志：取消 */
     public static final int ACTION_CANCEL = 0;
     /** 点播/取消标志：点播 */
