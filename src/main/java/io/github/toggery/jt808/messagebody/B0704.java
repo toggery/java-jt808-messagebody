@@ -70,23 +70,6 @@ public class B0704 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否为批量汇报
-     * @return 是否为批量汇报
-     */
-    public boolean isBatch() {
-        return type == TYPE_BATCH;
-    }
-
-    /**
-     * 获取是否为补报
-     * @return 是否为补报
-     */
-    public boolean isPost() {
-        return type == TYPE_POST;
-    }
-
-
     /** 类型：正常位置批量汇报 */
     public static final int TYPE_BATCH = 0;
     /** 类型：盲区补报 */

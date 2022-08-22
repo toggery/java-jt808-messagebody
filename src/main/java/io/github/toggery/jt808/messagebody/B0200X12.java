@@ -124,23 +124,6 @@ public class B0200X12 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否进方向
-     * @return 是否进方向
-     */
-    public boolean isIn() {
-        return direction == DIRECTION_IN;
-    }
-
-    /**
-     * 获取是否外出方向
-     * @return 是否出方向
-     */
-    public boolean isOut() {
-        return direction == DIRECTION_OUT;
-    }
-
-
     /** 位置类型：圆形区域 */
     public static final int TYPE_CIRCULAR_REGION = 1;
     /** 位置类型：矩形区域 */

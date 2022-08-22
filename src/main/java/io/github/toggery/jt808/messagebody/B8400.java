@@ -76,23 +76,6 @@ public class B8400 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否为普通通话
-     * @return 是否为普通通话
-     */
-    public boolean isCommon() {
-        return type == TYPE_COMMON;
-    }
-
-    /**
-     * 获取是否为监听
-     * @return 是否为监听
-     */
-    public boolean isListening() {
-        return type == TYPE_LISTENING;
-    }
-
-
     /** 标志：普通通话 */
     public static final int TYPE_COMMON = 0;
     /** 标志：监听 */

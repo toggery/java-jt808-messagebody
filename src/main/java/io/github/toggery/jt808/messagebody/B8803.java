@@ -165,15 +165,6 @@ public class B8803 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否为删除
-     * @return 是否为删除
-     */
-    public boolean isDeleted() {
-        return deleted == DELETED_DELETE;
-    }
-
-
     /** 删除标志：保留 */
     public static final int DELETED_RESERVE = 0;
     /** 删除标志：删除 */

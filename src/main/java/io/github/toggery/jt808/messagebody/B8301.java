@@ -85,14 +85,6 @@ public class B8301 extends AbstractToStringJoiner {
         return events;
     }
 
-    /**
-     * 获取是否删除所有事件
-     * @return 是否删除所有事件
-     */
-    public boolean isDeleteAll() {
-        return type == TYPE_DELETE_ALL;
-    }
-
 
     /** 类型：删除终端现有所有事件，该命令后不带后继字节 */
     public static final int TYPE_DELETE_ALL = 0;

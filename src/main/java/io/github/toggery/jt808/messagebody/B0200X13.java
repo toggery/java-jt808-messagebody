@@ -96,23 +96,6 @@ public class B0200X13 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否不足
-     * @return 是否不足
-     */
-    public final boolean isInsufficient() {
-        return result == RESULT_INSUFFICIENT;
-    }
-
-    /**
-     * 获取是否过长
-     * @return 是否过长
-     */
-    public final boolean isOverLength() {
-        return result == RESULT_OVER_LENGTH;
-    }
-
-
     /** 结果：不足 */
     public static final int RESULT_INSUFFICIENT = 0;
     /** 结果：过长 */

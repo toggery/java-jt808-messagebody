@@ -91,15 +91,6 @@ public class B0200X11 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否为无特定位置
-     * @return 是否为无特定位置
-     */
-    public boolean isNone() {
-        return type == TYPE_NONE;
-    }
-
-
     /** 位置类型：无特定位置 */
     public static final int TYPE_NONE = 0;
     /** 位置类型：圆形区域 */

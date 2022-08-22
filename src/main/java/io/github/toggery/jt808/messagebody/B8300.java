@@ -123,23 +123,6 @@ public class B8300 extends AbstractToStringJoiner {
     }
 
 
-    /**
-     * 获取是否为通知
-     * @return 是否为通知
-     */
-    public boolean isNotification() {
-        return type == TYPE_NOTIFICATION;
-    }
-
-    /**
-     * 获取是否为服务
-     * @return 是否为服务
-     */
-    public boolean isService() {
-        return type == TYPE_SERVICE;
-    }
-
-
     /** 类型：通知 */
     public static final int TYPE_NOTIFICATION = 1;
     /** 类型：服务 */
